@@ -1,0 +1,68 @@
+APRS Network Layers
+
+The typical APRS network uses an OSI network stack consisting of a VHF FM 
+voice radio transporting a derivative of Bell 202, AX.25 data link frames,
+and APRS network layer messages.
+
+Layer 1 - Bell 202
+
+The most common layer 1 modulation used in APRS is wide-band FM VHF radios
+tuned to 144.390MHz connected to Bell 202 1200 baud AFSK modems. These 
+modems use a NRZI variant of Bell 202 where each zero is represented as a
+change in frequency and every one is represented as no change in frequency
+between the two audio tones 1200Hz and 2200Hz. Due to the lack of any
+guarantee of there being spectral energy at the 1200 baud clocking 
+frequency and a need for layer 2 framing, the amateur variant of Bell 202 
+includes bit stuffing, where any string of more than five ones in the layer
+two bitstream modulated by the Bell 202 modem must be replaced by five 
+ones, a zero, and then the subsequent ones from the original bitstream.
+This supports clock syncronization between the transmitting and receiving
+stations, and also guarantees that a sequence of six ones is only ever seen
+in the inter-frame flags, which consist of a series of un-bit-stuffed
+0x7E octets when a station is keyed up but not sending frame data.
+
+Layer 2 - AX.25
+
+AX.25 is a well documented framing protocol used for amateur radio packet
+networks which is a derivative of X.25 and HDLC. The modifications to 
+the underlying X.25 protocol allow for each station to be identified by 
+their radio callsign and a four bit secondary station identifier to allow
+operators to run up to 16 nodes under the same callsign in the same 
+namespace.
+
+AX.25 provides fields for the source station's callsign, the destination's
+callsign, and up to eight digital repeaters that should relay the framed
+layer three packet between these two stations. As each digital repeater,
+or digipeater, receives and then retransmits a packet, they set the 
+"consumed" flag on their callsign in the path header to indicate that 
+they have processed the packet.
+
+APRS has deprecated the use of the destination callsign, since there was
+originally no concept of directed messages in APRS but only one-to-many
+communications advertising resources. The destination station field has
+seen many different uses, including the most popular which is using it to
+indicate the type of APRS equipment used at the source station.
+
+APRS has also modified AX.25 by adding a commonly known set of aliases 
+to be used in the path header in leu of explicit digipeater callsign-SSID
+paths as used in traditional AX.25 packet networks. This enables mobile 
+stations to move from network to network and not need to edit their
+routing paths since every digipeater is expected to respond to the 
+appropriate routing aliases and substitute their callsign-SSID upon 
+processing the APRS packet.
+
+APRS depricates the AX.25 status flags in the header, meaning that every
+APRS frame should indicate that it is an unconnection information frame
+with no layer three protocol, which is unfortunate since they should
+have arguably requested a unique layer three identifier from the AX.25
+standards committee explicitly for APRS. 
+
+Layer 3 - APRS
+
+APRS defines a number of different types of messages to be advertised to
+the local ALOHA circle including locations, status messages, telemetry data,
+weather data, and third-party objects and items of interest. Each type of
+APRS packet is identified by their first character, which maps to a 
+specific markup based on what kind of information the packet needs to 
+include.
+

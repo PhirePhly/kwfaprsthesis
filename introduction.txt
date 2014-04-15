@@ -1,0 +1,40 @@
+Introduction to APRS
+
+The Automatic Packet Reporting System (APRS) is an amateur radio packet
+network designed to provide each participating node a local view of the 
+tactical environment based on each node beaconing it's current status
+and advertising any other local resources known to exist.
+
+Exactly what types of resources should be advertised on a local APRS
+network is left to the discretion of the local network coordinators, but
+a typical APRS network would advertise information such as:
+* The location of amateur radio operators and what frequencies they are using for voice communications.
+* The location, frequency, and access information for voice repeaters
+* The location and status of APRS digital repeater nodes
+* The location and access information for other packet networks such as BBSes, Winlink nodes, or open Internet access points.
+* The location and status of useful facilities such as rest stops, resupply points for food/water, etc.
+* Telemetry from sensors such as weather stations or remote site monitoring (i.e. solar powered battery voltage)
+ 
+APRS was initially created as an evolution of the AX.25 packet networks
+built throughout the amateur community during the 1970s and 1980s before 
+near-ubiquitious access to the Internet caused the decline in local BBS 
+systems and created an excess of 1200 baud amateur packet modems.
+
+APRS supports basic communication between stations via node to node 
+text messages and comment field status updates, but should not be 
+considered a communications network to an end, but a way to be made aware
+of the other assets in the local area made available to support amateur 
+radio operations.
+
+
+Due to the fact that APRS is built upon the 1200bps AX.25 VHF packet
+network and the channel sharing concept of the ALOHA net, the amount of 
+traffic and the number of stations that it is possible to successfuly 
+support on a single network is severly limited. A tyical APRS network 
+is considered successful if a single node
+can use it to discover the 60 closest other assets on the network in a
+10-30 minute time frame. Trying to advertise information beyond one's
+ALOHA circle consisting of the 60 closest stations exceeds the 
+operational objective of the APRS network and usually proves to only be 
+detrimental to the network as it is consumed by advertisements for 
+resources well beyond the usable radius for a single operator.
