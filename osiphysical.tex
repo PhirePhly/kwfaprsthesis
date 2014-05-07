@@ -1,0 +1,38 @@
+\chapter{OSI Layer 1 --- Physical}
+
+\section{Bell 202 on RF}
+
+The most common layer 1 used for APRS on RF is a variant of the
+Bell 202 audio frequency shift keyed (AFSK) modem transmitted via 
+FM VHF radios. In North America, the primary frequency of operation is
+144.390MHz, but differs by country based on local band limitations.
+
+Bell 202 was originally  based on switching between 1200Hz and 2200Hz tones to
+represent a binary one or zero respectively. Due to Amateur radio operators
+using Bell 202 as a physical layer below AX.25, which ultimately derived 
+from HDLC, the original 1200Hz mark and 2200Hz space symbols are not used;
+the layer 2 data stream is encoded using 
+non-return to zero, inverted (NRZI),
+which requires zeros in the original bit stream to be encoded as a change
+between 1200Hz and 2200Hz and ones to be encoded as transmitting the same
+symbol during the next symbol period as during the prior.
+
+\subsection{Stages of a Bell 202 Transmission}
+
+Channel idle state; string of zeros for clock sync
+
+At least one flag octet 0x7E
+
+AX.25 UI frame with bit stuffing
+
+Frame Check Sum; 16 bit CCITT CRC
+
+At least one flag octet 0x7E
+
+Release of channel or an additional AX.25 frame and flag. 
+
+\section{KISS}
+
+\section{APRS-IS}
+
+
