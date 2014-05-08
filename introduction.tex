@@ -1,4 +1,4 @@
-\chapter{Introduction to APRS}
+\chapter{Introduction}
 
 The Automatic Packet Reporting System (APRS) is an amateur radio packet
 network designed to provide each participating node a local view of the 
@@ -14,13 +14,20 @@ a typical APRS network would advertise information such as:
 \item The location and status of APRS digital repeater nodes
 \item The location and access information for other packet networks such as BBSes, Winlink nodes, or open Internet access points.
 \item The location and status of useful facilities such as rest stops, resupply points for food/water, etc.
-\item Telemetry from sensors such as weather stations or remote site monitoring (i.e. solar powered battery voltage)
+\item Telemetry from sensors such as weather stations or remote site monitoring (i.e. battery voltage at solar sites)
 \end{itemize} 
 
-APRS was initially created as an evolution of the AX.25 packet networks
-built throughout the amateur community during the 1980s and 1990s before 
-near-ubiquitious access to the Internet caused the decline in local BBS 
-systems and created an excess of 1200 baud amateur packet modems.
+\section{History of APRS}
+
+APRS was created as an evolution of the AX.25 packet networks
+built throughout the amateur community during the 1980s and 1990s and 
+the Connectionless Emergency Traffic System (CETS) built by 
+Bob Bruninga during the early 1980s to map Navy position reports.
+
+Near-ubiquitious access to the Internet caused the decline in local BBS 
+systems and AX.25 TCP/IP networks during the 1990s, but APRS has 
+continued to enjoy a growing userbase due to it filling a unique 
+application of amateur packet radio to local short-lived communication.
 
 APRS supports basic communication between stations via node to node 
 text messages and comment field status updates, but should not be 
@@ -28,15 +35,19 @@ considered a communications network to an end, but a way to be made aware
 of the other assets in the local area made available to support amateur 
 radio operations.
 
-
-Due to the fact that APRS is built upon the 1200bps AX.25 VHF packet
-network and the channel sharing concept of the ALOHA net, the amount of 
+Due to the fact that APRS is built upon the relatively slow 
+1200bps AX.25 VHF packet
+network and the channel sharing concepts developed for the ALOHAnet at
+the University of Hawaii, the amount of 
 traffic and the number of stations that it is possible to successfuly 
-support on a single network is severly limited. A tyical APRS network 
-is considered successful if a single node
+support on a single regional network is severly limited. 
+A tyical APRS network is considered successful if a single node
 can use it to discover the 60 closest other assets on the network in a
-10-30 minute time frame. Trying to advertise information beyond one's
-ALOHA circle consisting of the 60 closest stations exceeds the 
+10-30 minute time frame. Trying to advertise information beyond this
+``ALOHA circle" consisting of the 60 closest stations exceeds the 
 operational objective of the APRS network and usually proves to only be 
-detrimental to the network as it is consumed by advertisements for 
-resources well beyond the radius of interest for a single operator.
+detrimental to the network and other users as network throughput is 
+consumed by advertisements for 
+resources beyond the radius of interest for the local operator.
+
+
