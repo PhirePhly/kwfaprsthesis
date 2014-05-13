@@ -25,17 +25,23 @@ One of the greatest failings of amateur packet radio is the lack of definitive
 collections of documentation on the complete protocol stacks currently used in 
 networks such as APRS. This is understandable as the task of documenting a 
 system as complex as APRS is momumental and requires digging through decades of 
-relevant standards, magazine articles, and personal diatribes made by infuential
-amateurs.
+relevant standards, magazine articles, and personal diatribes made by amateurs
+infulential in the field.
 
 The body of this document is divided into three sections loosely based on the 
-three lowest layers of the OSI seven layer network model. Many parts of APRS
+three lowest layers of the OSI seven layer network model. Many portions of the APRS
+protocol stack
 pre-date the OSI model, and maintaining clean separation of layers even in 
-contemporary protocols is challenging, so the lines drawn in this document will
-hopefully be viewed with a level of forgiveness. This holds particularly true 
-for what will likely be the controversial separation between Bell 202 and AX.25, 
-where I (the author?) have gone as far as to
-remove the Frame CheckSum (FCS) from AX.25 packets all together and place them
+contemporary protocols is challenging, so the lines drawn in this document should
+be viewed with a level of forgiveness by the reader. More importantly, these three
+layers are drawn to aid future work on experimenting with physical modulation 
+and data link protocols underneath the APRS packet application.
+
+While some of these differentiations already exist in the standing literature,
+this document isn't holding itself bound to the existing implicit conventions.
+One example is the likely controversial separation made between Bell 202 and 
+AX.25 where I (the author?) have gone as far as to
+remove the Frame Checksum (FCS) from AX.25 packets all together and place them
 instead in the Bell 202 frame, motivated by the fact that AX.25 packets are moved
 across other physical channels such as KISS without the required FCS.
 

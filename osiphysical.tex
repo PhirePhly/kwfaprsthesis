@@ -36,8 +36,39 @@ At least one flag octet 0x7E
 
 Release of channel or an additional AX.25 frame and flag. 
 
+\section{Performance Implications of Bell 202 Modems}
+
+TODO No FEC is severe limitation
+
+TODO Emphasis / deemphasis problem is unsolvable
+
+TODO Define Basic 3002 phone channel as good benchmark
+
 \chapter{KISS}
 
-\chapter{APRS-IS}
+KISS (``Keep It Simple, Stupid") is a protocol originally presented by 
+Mike Chepponis, K3MC and Phil Karn, KA9Q at the 6th ARRL Computer Networking
+Conference in Redondo Beach, CA in 1987 as an extension to the Serial Line 
+Internet Protocol (SLIP) described in RFC 1055 allowing for in-band signalling from 
+the host to the Terminal Node Controller (TNC) to enable setting modem 
+configuration parameters. 
 
+During the early 1980's, the expectation was that the TNC would be handling 
+the entire packet protocol stack up to the final presentation to the user, which
+could conceivably be done using a dumb terminal such as a VT100 or line printer 
+and a keyboard. 
+Once personal computers became affordable in the late 1980's, the expectation that
+the entire application stack would run on the embedded TNC became severely limiting
+and KISS emerged as the solution to expose the modems inside TNCs via 
+an eight bit clean interface.
+
+TODO Describe typical application of KISS in node.
+
+TODO Being 8 bit clean is a huge advantage.
+
+TODO Doesn't allow for TNC to host message passing
+
+\chapter{Bell 103 and PSK63}
+
+TODO Mention the two main HF modes. 
 
