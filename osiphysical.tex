@@ -1,6 +1,11 @@
-\chapter{OSI Layer 1 --- Physical}
+\part{OSI Layer 1 --- Physical}
 
-\section{Bell 202 on RF}
+The physical layer of APRS defines the different signalling methods used
+to transport datalink layer packets from one node to another across one of
+the several physical channels typically used in the APRS network.
+
+
+\chapter{Bell 202 on RF}
 
 The most common layer 1 used for APRS on RF is a variant of the
 Bell 202 audio frequency shift keyed (AFSK) modem transmitted via 
@@ -17,7 +22,7 @@ which requires zeros in the original bit stream to be encoded as a change
 between 1200Hz and 2200Hz and ones to be encoded as transmitting the same
 symbol during the next symbol period as during the prior.
 
-\subsection{Stages of a Bell 202 Transmission}
+\section{Stages of a Bell 202 Transmission}
 
 Channel idle state; string of zeros for clock sync
 
@@ -31,8 +36,8 @@ At least one flag octet 0x7E
 
 Release of channel or an additional AX.25 frame and flag. 
 
-\section{KISS}
+\chapter{KISS}
 
-\section{APRS-IS}
+\chapter{APRS-IS}
 
 

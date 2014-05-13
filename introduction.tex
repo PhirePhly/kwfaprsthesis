@@ -1,3 +1,5 @@
+
+
 \chapter{Introduction}
 
 The Automatic Packet Reporting System (APRS) is an amateur radio packet
@@ -16,6 +18,26 @@ a typical APRS network would advertise information such as:
 \item The location and status of useful facilities such as rest stops, resupply points for food/water, etc.
 \item Telemetry from sensors such as weather stations or remote site monitoring (i.e. battery voltage at solar sites)
 \end{itemize} 
+
+\section{Goals of This Document}
+
+One of the greatest failings of amateur packet radio is the lack of definitive
+collections of documentation on the complete protocol stacks currently used in 
+networks such as APRS. This is understandable as the task of documenting a 
+system as complex as APRS is momumental and requires digging through decades of 
+relevant standards, magazine articles, and personal diatribes made by infuential
+amateurs.
+
+The body of this document is divided into three sections loosely based on the 
+three lowest layers of the OSI seven layer network model. Many parts of APRS
+pre-date the OSI model, and maintaining clean separation of layers even in 
+contemporary protocols is challenging, so the lines drawn in this document will
+hopefully be viewed with a level of forgiveness. This holds particularly true 
+for what will likely be the controversial separation between Bell 202 and AX.25, 
+where I (the author?) have gone as far as to
+remove the Frame CheckSum (FCS) from AX.25 packets all together and place them
+instead in the Bell 202 frame, motivated by the fact that AX.25 packets are moved
+across other physical channels such as KISS without the required FCS.
 
 \section{History of APRS}
 
@@ -49,5 +71,4 @@ operational objective of the APRS network and usually proves to only be
 detrimental to the network and other users as network throughput is 
 consumed by advertisements for 
 resources beyond the radius of interest for the local operator.
-
 
