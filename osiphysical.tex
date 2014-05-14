@@ -36,13 +36,56 @@ At least one flag octet 0x7E
 
 Release of channel or an additional AX.25 frame and flag. 
 
-\section{Performance Implications of Bell 202 Modems}
+\section{Baseband Performance of Bell 202 Modems}
 
 TODO No FEC is severe limitation
 
 TODO Emphasis / deemphasis problem is unsolvable
 
 TODO Define Basic 3002 phone channel as good benchmark
+
+\section{Carrier Sense Multiple Access}
+
+Since amateur Bell 202 is a half duplex modulation traditionally using FM voice 
+transceivers, one of the challenges to packet radio is avoiding multiple stations
+transmitting on the same channel at once. Other derivatives of ALOHAnet, such as 
+the original half duplex 10Mbps Ethernet, have the advantage that transmitters can
+at least sense when a collision has taken place and use that information to abort
+the transmission of the rest of the frame.
+
+Throughout the history of APRS, there has been several debates as to the implications
+of CSMA algorithms and primarily the need for one at all versus an entirely 
+stocastic channel access method. The argument follows that the majority of 
+channel contention is between multiple clients trying to reach a single digipeater
+across what's called a split horizon, where each of the clients can hear and be heard
+by the digipeater, but are entirely unaware of each other. In these types of instances,
+even an optimal CSMA algorithm will never correctly cause one of the stations to hold 
+off until the end of the other's transmission due to the needed information being
+entirely unavailable.
+
+Besides the degenerate case of ignoring the current channel status completely when 
+deciding to transmit a pending frame, there are two major algorithms used for CSMA;
+DWait and P-persistent.
+
+DWait is a deterministic algorithm where each station is assigned a fixed
+``quiet time" after the end of another tranmission before they will begin a locally
+pending tranmission. This lends itself well to very carefully designed networks
+where the relative priority of each station is known and a corresponding DWait time
+is set for each station where a shorter DWait will always gain the channel over a longer
+one. The requirement for the network to have an overarching design doesn't lend itself
+well to the national APRS network, but could be applied effectively for localized 
+portions of the APRS network and for ``insular" networks built for special events or
+private groups of amateurs.
+
+P-persistent is a statistical algorithm with two variables: the slot time, and the
+probability that a station should transmit at the beginning of a slot. The slot time
+should presumably be set to as short of a time interval during which a station can
+reliabily identify another station as transmitting before beginning its own transmission,
+and the P value for how likely a station is to transmit should be set based on the 
+number of other stations with pending traffic attempting to gain the channel.
+
+TODO Table of typical mobile radio tx-rx and rx-tx changeover times.
+TODO The typical 100ms slot time seems to be much too short.
 
 \chapter{KISS}
 
