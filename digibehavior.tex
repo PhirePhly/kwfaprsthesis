@@ -1,0 +1,76 @@
+\chapter{Digital Repeater Routing Behavior}
+
+An integral part of APRS is the huge array of digital repeaters deployed throughout the network.
+The job of the digipeaters is to receive, process, and selectively retransmit packets from other 
+stations in the network to improve network coverage and each station's effective range.
+Originally, since AX.25 was used almost exclusively for static networks, it was valid that
+the networks relied on the concept of manually constructing the exact string of digipeater hops
+between two stations. When one of these digipeaters subsequently went down, a new route would 
+need to be found between the two stations.
+
+One of the large inovations of APRS was that these literal routing paths be replaced with 
+well-known universal aliases for digipeaters such that a single node could move from area to
+area and the local infrastructure would still support the same requested routing behavior.
+
+\section{RELAY,WIDE}
+
+The original conception of APRS included several aliases, but the most important were RELAY
+and WIDE. Digipeaters were divided into two categories depending on if they were high-level
+(on the top of large towers, mountain tops, etc.) or low-level (primarily sub-40' home installs).
+
+Low-level ``fill-in" digipeaters are needed to assist low-power moving trackers in reaching the
+primary high-level digipeater network where it would be possible to be heard by other stations.
+Without these fill-in repeaters, lower power beacons would be lost in the noise and never reach the 
+network at large. Therefore, trackers that need this help would begin their routing path with RELAY.
+
+The high-level digipeaters that consist the major portion of the network coverage in terms of area
+would respond to the alias of WIDE, in addition to the alias of RELAY such that if a tracker got
+lucky and happened to be decoded by one of the high level digis it wasn't punished for first requesting 
+help from a lower-level digi.
+
+This RELAY for low-level and both RELAY and WIDE alias for high-level digipeater concept worked well
+because the existing packet hardware at the time natively supported configuring these aliases, but
+became increasingly problematic as the APRS network grew and became higher density. Each digipeater
+could not verify that they had already retransmitted a beacon, so single packets would ``ping-pong" 
+between digipeaters repeatedly until the entire path was finally consumed.
+
+To solve this, a new digipeater behavior was implemented where each digi would keep a log of
+all the packets it had retransmitted in the last 30 seconds based on the source callsign and 
+packet contents (TODO verify the exact fields needed for dedup behavior). Therefore, when a digipeater 
+hears an echo of an already digipeated packet, it will correctly ignore it and not generate more
+redundant traffic on the APRS channel.
+
+\section{WIDEn-N}
+
+At the same time as the development of the deduplication concept, a new alias of WIDEn-N was 
+developed with the goal of shortening AX.25 headers. A typical packet requesting three hops through
+WIDE digipeaters would construct a routing path of ``WIDE,WIDE,WIDE," which would cause the 
+AX.25 header to become 21 bytes longer than the minimum 16. The idea of WIDEn-N was to replace this
+three hop path with a single alias of ``WIDE3-3," where the first number indicates the originally
+requested number of hops and the second number the number of remaining hops. Therefore, as a packet
+with an original path of "WIDE3-3" moved through digipeaters, each digipeater would rewrite the path 
+to be ``WIDE3-2," ``WIDE3-1," and finally ``WIDE3-0*" at which point the path would be completely 
+consumed and should no longer be digipeated.
+
+While this was a sound design at the time, a failure in the implementation of this alias in one of
+the more popular firmware revisions of Kamtronics TNCs meant that the deduplication algorithm used to
+prevent packet echos from bouncing between digipeaters was not applied between the WIDEn-N and the 
+original RELAY alias. Excessive cost to purchase new firmware ROMs from Kamtronics meant that much
+of the network had no choice but to find a technical workaround to this firmware bug.
+
+The lasting solution to this issue was proposed by Stephen Smith where the alias of RELAY would be
+replaced by an alias of WIDE1-1, which allowed the Kamtronics' TNCs to use their deduplication
+algorithms while preserving a literal alias to be used by the lower level digipeaters, many of which
+did not and never would support the WIDEn-N alias concept. Low-level digis would respond to WIDE1-1, 
+while higher level digis would respond to all permutations of WIDEn-N.
+
+The only shortfall with this proposal to repurpose WIDE1-1 as a replacement for RELAY was that it
+left no proper way to request a single hop from high-level digipeaters while excluding the low-level
+digis not needed by stationary or high power trackers. The clever solution was to recommend that single
+high-level hops be requested by the path of ``WIDE2-1," which literally means that the original tracker
+requested two hops and that only one of them is left, which violates the original spirit of the leading
+number in the alias but functionally yields the desired behavior.
+
+\section{Digipeater Levels}
+
+TODO This is where I flat out contradict the existing standard?
