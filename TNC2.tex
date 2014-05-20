@@ -1,0 +1,36 @@
+\chapter{TNC2 Monitor}
+
+The TNC2 was a terminal node controller developed by TAPR which
+quickly became the definitive TNC in the amateur packet network.
+This popularity meant that it enjoyed becoming the de-facto 
+standard for many of the commands and interfaces involving 
+TNCs.
+
+One of the de-facto standards solidified by the TNC2 is the text
+representation of AX.25 packets, which the TNC2 used in what it
+called ``monitor mode." This mode asked that the TNC print 
+every packet it received via RF to the local console such that
+users can see and monitor the other AX.25 traffic on the channel.
+While the TNC2 monitor mode does not capture the entire state of 
+an AX.25 header, APRS uses so little of the header (as discussed in
+the AX.25 chapter) that the TNC2 markup proved sufficent as the 
+format used to pass APRS packets throughout the APRS-Internet System
+backbone created to aggregate APRS traffic online.
+
+Each packet must consist of a source address, a destination address,
+an optional list of digipeaters, and the packet payload.
+The source and destination calls are seperated by a right chevron,
+followed by a comma seperated list of digital repeaters, and finally
+terminated by a colon before the higher layer payload.
+
+The digipeaters are listed in sequential order, and an asterisk
+is appended to at least the last digipeater in the 
+routing path that has already processed and retransmitted the packet.
+Some implementations of the TNC2 monitor mode append the ``consumed"
+asterisk to every used digipeater in addition to the last one,
+which semantically makes no difference due to digipeaters
+being consumed in a strictly monotonic order.
+
+TODO I think the APRS-IS uses the later format.
+
+SRCCALL>DSTCALL,DIGI*,DIGI:,Packet payload
