@@ -1,0 +1,65 @@
+\chapter*{Preface}
+
+Like any major research endevor, this thesis certainly didn't start anywhere near
+where it ended.
+Most of the credit for the genesis for this thesis needs to be given to 
+Sivan Toledo, 4X6IZ, from Tel-Aviv University. In 2012 he wrote an article in the
+amateur radio QEX technical journal where he explored improving the soundcard 
+digital signal processing modem used for amateur packet radio by passing the 
+original signals through a series of band-pass filters. His improvements were
+commendable, and his article was very well written, but what bothered me was that 
+more than three decades after the inception of amateur radio, we're still seeing
+measurable improvement in the modems we use for the original modulation techniques.
+
+This thesis started with me wanting to tear apart the current state of the various
+Bell 202 modems used in amateur radio, build a quantitative model of the kinds of
+interference and distortion that each modem handled well, and hopefully design
+a new signal processing algorithm that showed immunity to the most common forms of
+interference on real-world channels. Sevan's work in JAVA showed promise, but 
+while his library is useful on desktop computers and Android devices, it left 
+out in the cold the many different 8, 16, and 32 bit fixed-point microcontrollers
+that are often used for embedded modems in amateur radio projects.
+
+As I started to dig into the specifications for the various network layers used
+in the amateur Automatic Packet Reporting System (namely Bell 202, AX.25, and
+APRS), I grew increasingly shocked and confused when I kept finding that the
+documentation I was looking for was skimmed over or simply didn't exist. 
+Protocol specifications would identify variables critical for network performance,
+and then never touch on what the actual value should be. Many of the documents
+on the expected behavior for network nodes consist solely of console commands
+to be run on specific pieces of disconntinued hardware instead of actual protocol
+behavior. Every article touching on parts of the network disagreed with 
+other documentation on the subject, and was often internally inconsistent as well.
+
+The final turning point was an interview in March, 2014 with Scott Miller, the
+designer for one of the more popular lines of contemporary modems used in the
+network.
+I brought a laundry list of inconsistencies from the network specs and he
+explained how much effort he had put into reverse engineering the existing 
+hardware. It was an eye-opening conversation that drove home how much the 
+amateur packet network has grown haphazardly over the past three decades into
+a jumble of band-aids applied upon band-aids.
+
+I then realized that the most needed academic research on the topic of APRS isn't
+how to squeeze out another incremental improvement in one of the modem DSP
+algorithms, but an over-arching prolegomenon on the entire network stack as it 
+actually exists today. The existing documentation clearly falls short, and 
+much of the institutional knowledge that I've been able to draw on during 
+my research is coming from the ``old guard" of the hobby, which leaves us exposed
+to the labor intensive requirement of newcommers to the network to 
+reverse engineer the existing network before they can participate.
+
+Ideally, this document would be able to stand by itself as a complete 
+``implementer's guide" to APRS from the physical layer all the way up to high level
+aggregate network behavior, but the scope of reverse engineering that much
+behavior, documenting it, and then verifying the documentation quickly becomes
+momumental. However enjoyable it would be to earn a PhD studying and optimizing
+a 1200 baud network built in the 20\textsuperscript{th} century, I'm regretably 
+not the person to answer all of the standing questions on the network. 
+It is my hope that this document does at least identify the most glaring 
+short-falls in the current documentation and network design, and give answers to
+the questions that can be most easily answered.
+
+For every problem I attempt to identify and give an answer to in this paper, there
+is easily twice as many unanswered questions which each warrant being considered 
+as a thesis of their own.
