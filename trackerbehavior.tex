@@ -1,0 +1,131 @@
+\chapter{Node Beaconing Behavior}
+
+Due to the fact that APRS is a source-routed protocol, most of the decisions as
+to how often a station should send traffic and how far that traffic should
+travel are allowed to be made by that originating station. 
+The existing specification for the protocol hardly touches on this issue, 
+while a great deal of time and energy is spent on the development forums 
+bemoaning specific examples of misbehaving members of the network.
+The two major parameters under the source node's control that are considered
+here are the frequency of beaconing and the routing path used for each beacon.
+
+Being a source-routed protocol does fundamentally introduces a
+moral hazard in the network. For each node in the network to enjoy the
+most benefit from the network, they would want to beacon as often as possible 
+with the longest path allowed by the network.
+It is only by mutual trust, respect, and education that this 
+logic isn't universally followed and the network is not grossly oversubscribed
+in the self-interest of every individual network node. 
+Unfortunately, the most popular documentation on APRS fails to stress the 
+importance of correctly configuring nodes in the best interest for the network
+at large, and rarely gives any concrete guidance on what values should typically
+be used when configuring various types of network nodes.
+
+
+\section{Beaconing Algorithms}
+
+For each APRS node with information available for the network,
+a local decision needs to be made as to when that information will best 
+serve the local network and should be transmitted. This is rarely a trivial 
+decision, and one that could warrent much more creative and application or data
+specific solutions than the ones presented here, which should be considered 
+the typical minimum of most popular APRS trackers. The only datum considered 
+in this paper is that of a mobile node's position, but these algorithms would
+likely extend to most other user applications of APRS.
+
+\subsection{Fixed Interval Beaconing}
+
+The simplest beaconing algorithm consists of waiting a single fixed interval
+between beacons, and only requires a single parameter that is the beacon interval.
+When a tracker is turned on, it aquires a GPS lock and immediately sends out a 
+beacon and starts a timer. Once that timer exceeds the beacon interval value, a 
+new position is aquired from the GPS receiver and the new location is beaconed.
+While simple, this algorithm does suffer from a number of inadequacies:
+\begin{itemize}
+\item The decision to beacon is made solely based on how long it has been
+since the previous beacon, without considering any other information available
+to the tracker. Examples of additional information would include whether the 
+tracker has moved, how fast the tracker is moving, or any packets received from
+the APRS network since the last beacon
+\item A single fixed interval limits the amount of entropy introduced into the
+network with regards to inter-packet arrival at other nodes. Since APRS is a 
+CSMA shared channel network, it's tempting to use Poisson distribution models
+for network capacity, which is likely invalid when the only source of entropy 
+per tracker is the time when it was last turned on or gained GPS lock.
+\end{itemize}
+
+There are of course several possible extensions to the fixed interval beaconing
+algorithm which each fix various deficiencies at the expense of simplicity.
+
+\subsection{Time Slot Interval Beaconing}
+
+Arguably a more restrictive form of fixed interval beaconing, time slotting is 
+based on the idea of preventing channel collisions by allocating each tracker
+a fixed time slot in each interval for when they are allowed to transmit.
+An infeasible solution for the national APRS network due to its scale and lack
+of coordination, time slotting is often applied where unusually high levels of
+coordination do exist, such as special events and insular networks.
+
+Time slotting introduces a new parameter called the slot time, and depends on every
+tracker using it having syncronized real time clocks, which is reasonable since most
+GPS receivers provide real time to within typically 200ms of UTC 
+as part of their position reports
+\footnote{The 200ms uncertainty is a typical value due to the delivery of time over
+an asyncronous 4800 baud serial port. Internally, GPS receivers must maintain 
+their real time clocks to several orders of magnitude higher precision than this
+to be even remotely useful, but this precision isn't needed for APRS time slotting}.
+
+The slot time determines how many seconds after the beginning of each interval
+a tracker should beacon. The beginning of each interval is defined by the top of
+the hour, and intervals run successively for the remainder of the hour.
+For example, a tracker configured to time slot with an interval of 550 seconds and
+a time slot of 12 would beacon at the following times:
+\begin{itemize}
+\item 00:00:12
+\item 00:09:22
+\item 00:18:32
+\item 00:27:42
+\item 00:36:52
+\item 00:46:02
+\item 00:55:12
+\item 01:00:12
+\end{itemize}
+
+This deterministic beaconing algorithm allows carefully designed networks to 
+over-subscribe the network well beyond the levels expected from 
+the national stocastic APRS network. 
+On an insular network seperate from the national
+network, it would be possible to set an aggresively short beacon interval and 
+carefully space trackers such that no two beacons are within two seconds of each
+other. This would make it possible to accomplish service levels such as
+every-minute position updates from up to 30 tracked vehicles, 
+at the expense that there is no allowance for any additional traffic 
+on the RF channel, and the network would depend on it being manually 
+assured that every tracker is configured to use its proper time slot.
+
+\subsection{Nice Interval Beaconing}
+
+Nice beaconing is a behavioral extension to fixed interval beaconing 
+where trackers consider whether a ``echo"
+of a position beacon is heard back from any near-by digital repeaters.
+Since digipeaters tend to have much higher power transmitters and better quality
+antennas than mobile trackers, once a packet is successfully received by any 
+digipeater, that packet is much more likely to be received by a much larger
+fraction of the target audience. Most implementations introduce a new parameter
+called nice \cite[p.~38]{ot3manual}, 
+which is the number of subsequent beacons to skip when a digipeater echo is heard.
+
+\subsection{Dithered Interval Beaconing}
+
+\subsection{Smart Beaconing}
+
+\section{Path Recommendations}
+
+\begin{itemize}
+\item Fixed site: WIDE2-1 or literal Digis
+\item Mobile: WIDE1-1,WIDE2-1
+\item Airbore: No path
+\item Weather Stations: WIDE2-2?
+\item Proportional pathing
+\end{itemize}
+

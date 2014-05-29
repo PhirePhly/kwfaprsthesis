@@ -1,11 +1,17 @@
 \documentclass{report}
 
+% Image support with PDF conversion
 \usepackage[pdftex]{graphicx}
+% Inserts a line feed between paragraphs, because it makes me feel grown up
 \usepackage{parskip}
+% Underline text using \uline{...}
+\usepackage[normalem]{ulem}
+% Sane URL handling
+\usepackage{url}
 
 
 \begin{document}
-\title{SPRS: The Simplified Packet Relay System}
+\title{Studying the Evolution and Undefined Behavior in the Automatic Packet Reporting System}
 \author{Kenneth Finnegan}
 \maketitle
 
@@ -27,9 +33,10 @@ possible improvements and document deficiencies in the existing network.
 \tableofcontents
 
 \input{introduction.tex}
-\input{networklayers.tex}
 \input{osiphysical.tex}
 \input{osidatalink.tex}
 \input{osinetwork.tex}
+
+\input{bib.tex}
 
 \end{document}
