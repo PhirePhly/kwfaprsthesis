@@ -171,6 +171,10 @@ for any of these algorithms is not at all straight forward.
 
 The original HamHUD algorithm is documented online as a snippet of C-like 
 pseudocode as shown in figure~\ref{fig:hamhudsmartbeacon}.
+In addition to the seven algorithm parameters, the pseudocode
+requires the current speed and heading of the tracker, which are both
+typically available from the \$GPRMC NMEA sentence \cite{nmearmc} provided by the 
+tracker's GPS receiver, and the number of seconds since the last transmitted beacon.
 Unfortunately, there are a number of issues with the provided code that
 have possibly harmed deployment of the SmartBeaconing algorithm on other trackers:
 \begin{itemize}
@@ -187,6 +191,10 @@ have possibly harmed deployment of the SmartBeaconing algorithm on other tracker
 		instead of beacon\_rate, where secs\_since\_beacon is a system
 		invariant that would likely be implemented as a const
 		or in-line function call.
+	\item The SmartBeaconing documentation indirectly implies that 
+		the velocities used are in units
+		of miles per hour, where the corresponding unit in the APRS
+		specification is expressly knots.
 \end{itemize}
 
 Due to these issues, it seemed appropriate to rewrite the algorithm 
