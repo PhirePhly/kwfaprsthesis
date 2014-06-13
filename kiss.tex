@@ -1,0 +1,82 @@
+\chapter{KISS}
+
+KISS (``Keep It Simple, Stupid") is a protocol originally presented by 
+Mike Chepponis, K3MC and Phil Karn, KA9Q at the 6th ARRL Computer Networking
+Conference in Redondo Beach, CA \cite{KISSspec}.
+KISS was designed as an extension to the Serial Line 
+Internet Protocol (SLIP) allowing for in-band signalling from 
+the host to the modem to enable setting modem 
+configuration parameters such as the preamble length and CSMA parameters.
+
+During the early 1980's when amateur Terminal Node Controllers were developed,
+the expectation was that the TNC would be handling 
+the entire packet protocol stack up to the final presentation to the user, which
+could be done using a dumb terminal such as a VT100 or line printer 
+and a keyboard. 
+As personal computers became affordable in the late 1980's, the expectation that
+the entire application stack would run on the embedded TNC became severely limiting
+and KISS emerged as the solution to expose the modems inside TNCs via 
+an eight bit clean interface.
+
+This meant that the existing TNCs with their radio interfaces could
+be upgraded with new ROMs that supported KISS and any new network behavior
+or protocol could be instead implemented on the host PC.
+This was particularly valuable since personal PCs were much
+more productive development environments than the 256kb UV EPROMs and 8 bit
+Z80 microprocessors of the popular Tucson Amateur Packet Radio TNC 2 product
+and it's several clones \cite{TNC2manual}.
+
+\section{Advantages of KISS}
+
+While originally designed as a stop-gap solution, KISS has continued to be 
+the definitive modem to host communication protocol used in amateur packet radio.
+This is arguably due to its simplicity, flexibility,
+and the foresight on the designer's part
+to including means for implementation-specific extensions to the protocol.
+
+The simplicity of KISS makes it easy to implement on severely resource-constrained
+microcontrollers. The designers did a good job of keeping the scope of the KISS
+specification small such that it lends itself well as the binary transport
+layer between two local nodes while being flexible enough to be useful for
+more sophisticated systems.
+
+Every KISS command is prefixed by a four bit port address and four bit 
+command code. The four bit address means that a single serial port can 
+support multiplexing up to 16 radio modems, though implementations with more
+than one or two ports are unusual. The command codes indicate the contents of the 
+following KISS frame, be it a data frame to be transmitted, a configuration
+parameter, or a hardware specific command.
+
+The hardware specific ``SetHardware" command code is particularly valuable
+since it enables future developers of hardware using the KISS protocol
+that happen to need the ability to send additional configuration parameters
+to the modem beyond the four that are documented are able to do so in a
+standards-compliant way.
+
+\section{Disadvantages of KISS}
+
+While not fatal, there are a small number of deficiencies with the KISS
+protocol that keep it from being an ideal link protocol between hosts and modems.
+
+KISS makes no provisions for checksums or error detection of frames transfered
+between host and modem. This is not a problem for the typical application where
+systems use a short RS-232 link, due to the link seeing few if any bit errors.
+Unfortunately, other amateurs have felt the need to implement checksums via
+several less-well-documented extensions to KISS which see limited application
+or support.
+
+KISS makes no provisions for other channel access methods other than
+Carrier Sense Multiple Access, which limits its usefulness on amateur networks
+using other channel access methods such as Time Division Multiple Access
+or Demand Assigned Multiple Access, which are more popular in European 
+packet networks but are also used in some insular APRS networks 
+(see chapter~\ref{subsec:timeslot})
+
+There is no supported command codes from modem to host other than the data frame
+command, which prevents hosts from being able to interogate the device 
+about out-of-band information such as the modem's model and feature set,
+the curret values of channel access parameters, or any measurements of the 
+channel occupancy beyond successfully received complete packets.
+
+TODO: Discuss overly conservative defaults.
+

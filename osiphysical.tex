@@ -88,29 +88,7 @@ number of other stations with pending traffic attempting to gain the channel.
 TODO Table of typical mobile radio tx-rx and rx-tx changeover times.
 TODO The typical 100ms slot time seems to be much too short.
 
-\chapter{KISS}
-
-KISS (``Keep It Simple, Stupid") is a protocol originally presented by 
-Mike Chepponis, K3MC and Phil Karn, KA9Q at the 6th ARRL Computer Networking
-Conference in Redondo Beach, CA in 1987 as an extension to the Serial Line 
-Internet Protocol (SLIP) described in RFC 1055 allowing for in-band signalling from 
-the host to the Terminal Node Controller (TNC) to enable setting modem 
-configuration parameters. 
-
-During the early 1980's, the expectation was that the TNC would be handling 
-the entire packet protocol stack up to the final presentation to the user, which
-could conceivably be done using a dumb terminal such as a VT100 or line printer 
-and a keyboard. 
-Once personal computers became affordable in the late 1980's, the expectation that
-the entire application stack would run on the embedded TNC became severely limiting
-and KISS emerged as the solution to expose the modems inside TNCs via 
-an eight bit clean interface.
-
-TODO Describe typical application of KISS in node.
-
-TODO Being 8 bit clean is a huge advantage.
-
-TODO Doesn't allow for TNC to host message passing
+\input{kiss.tex}
 
 \chapter{Bell 103 and PSK63}
 
