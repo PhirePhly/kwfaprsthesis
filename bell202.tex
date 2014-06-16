@@ -93,12 +93,12 @@ consider:
 	\item The frame payload and frame check sum must be bit stuffed as
 		discussed in section \ref{sec:bell202history}
 	\item Every octet is encoded and transmitted least significant bit first,
-		including the frame checksum.
-		This contradicts the AX.25 and ITU V.42 specification, 
+		including the Frame Check Sum.
+		This contradicts the AX.25 and ITU V.42 specifications, 
 		which state
 		that while the frame payload is transmitted LSB first, the frame
 		check sum is transmitted MSB first 
-		\cite[\S3.8]{ax25spec}\cite{n1vgphy}\cite[\S8.1.2.2-3]{ituv42}.
+		\cite[\S3.8]{ax25spec},\cite{n1vgphy},\cite[\S8.1.2.2-3]{ituv42}.
 	\item The Frame Check Sum is calculated using the CRC-16-CCITT checksum
 		with the polynomial representation 0x1021. 
 		Note that the two octets are sent little-endian, not

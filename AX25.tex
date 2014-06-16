@@ -31,13 +31,14 @@ marked as ``consumed" as will be explained in section~\ref{subsec:ax25RoutingPat
 The two exceptions to this rule are what are called non-trace digipeaters which do not
 append their callsign to a packet's routing path and any station which uses a tactical callsign
 instead of their FCC-issued callsign. Tactical callsigns are often used for packet stations to
-give them more meaningful addresses than their current operator's callsign. One example of where
+give them more meaningful addresses than their control operator's callsign. One example of where
 tactical callsigns are often used is events where APRS is used to track support vehicles that 
 already have tactical callsigns issued to their voice operators, such as ``SAG-3" or ``CHASE-1."
-Since both of these types of stations do not use their FCC callsign as part of their AX.25 address,
-these stations do need to somehow ensure that they transmit their callsign every ten minutes, which
+Since these stations do not use their FCC callsign as part of their AX.25 address,
+these stations do need to somehow ensure that they transmit their callsign 
+at least once every ten minutes while operating, which
 may be accomplished by including the control operator's callsign in the comment text of an 
-originating APRS beacon, which must be transmitted at least every ten minutes.
+originating APRS beacon.
 
 \section{Header Format for APRS}
 
@@ -46,16 +47,23 @@ deliberately avoiding the use of any of the connected or control modes of AX.25.
 means that any AX.25 protocol stack used for APRS need only support unconnected information (UI)
 frames per the AX.25 specification.
 
-\subsection{Destination Address}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\textwidth]{src/dia/ax25ui}
+	\caption{AX.25 UI Packet Format}
+	\label{ax25uiformat}
+\end{figure}
+
+\subsection{TNC Description / Destination Address}
 
 Traditional AX.25 traffic is usually directed at a single station, which would be indicated by 
-a packet's destination address. Since APRS is strictly a one-to-many network protocol, this field
+a packet's destination address. Since APRS is strictly a one-to-many network protocol at layer 3, this field
 is not needed for APRS and has been overloaded for several different applications.
 
 The most popular application for this field is to be used as a tracker identifier, where a
 six character identifier is allocated from the APRS Working Group to identify a specific 
 APRS TNC and firmware version. Experimental trackers which have not yet received a tracker ID
-should use the TODO VERIFY APZZ?? identifier.
+should use the APZ??? identifier.
 
 \subsection{Source Address}
 
@@ -63,8 +71,8 @@ The source address is the FCC or tactical callsign used by the beaconing APRS st
 additional SSID appended to the station, which may range from zero to 15. Source addresses must 
 be at least three characters long, and may not be any longer than six. Stations using AX.25 
 over RF are limited to the SSID's of -0 to -15 due to AX.25's binary format, 
-while stations using alternative data link transports are only limited to 
-two alphanumeric characters.
+while stations using alternative data link transports may use any 
+two alphanumeric characters for their SSID.
 
 \subsection{Routing Path}
 \label{subsec:ax25RoutingPath}
@@ -77,7 +85,7 @@ set on the source address field. The path must consist of an integer number of s
 The original AX.25 version 2.0 spec allowed for anywhere from zero to eight digipeaters to
 be included in an AX.25 frame. Unfortunately, due to the unreliable nature of amateur 
 packet radio, packets with a routing path requesting as many as eight hops would rarely be 
-successfully delivered to the end station, so the version 2.2 specification for Ax.25 was
+successfully delivered to the end station, so the version 2.2 specification for AX.25 was
 rewritten limiting the number of requested digipeaters to two with the argument that packets
 traveling beyond two hops should be handled by a higher layer protocol than AX.25.
 This limitation, and the unclear figure 3.1 which indicates that only zero or two digipeaters
@@ -87,14 +95,15 @@ users are strongly discouraged from using beyond three hops on the national netw
 \subsection{Control Flags}
 
 The Control Flag octet indicates what type of AX.25 frame the considered packet is. 
-Since APRS stictly only uses Unconnected Information (UI) frames, this field must
+Since APRS stictly uses only Unconnected Information (UI) frames, this field must
 contain the value of 0x03.
 
 \subsection{Protocol IDentifier}
 
 The Protocol IDentifier (PID) field is normally used to identify the layer three protocol
 being transported by AX.25. TAPR has reportedly stopped processing requests for new PID
-values to be issued to new layer 3 applications of AX.25, so APRS uses the value of
+values to be issued to new layer 3 applications of AX.25 \cite{millernopid}, 
+so APRS uses the value of
 0xF0 indicating that no layer 3 protocol is in use.
 
 \subsection{Information Field}
