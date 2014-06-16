@@ -1,10 +1,10 @@
 
-DIAGRAMS := $(patsubst %.dia,%.png,$(wildcard *.dia))
+DIAGRAMS := $(patsubst %.dia,%.eps,$(wildcard *.dia))
 
-png-export: $(DIAGRAMS)
+eps-export: $(DIAGRAMS)
 
-%.png: %.dia
-	dia -e $@ -t png-libart $^
+%.eps: %.dia
+	dia -e $@ $^
 
 clean: 
 	rm -f $(DIAGRAMS)
