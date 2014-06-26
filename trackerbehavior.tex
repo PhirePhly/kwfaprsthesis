@@ -78,7 +78,11 @@ to be even remotely useful, but this precision isn't needed for APRS time slotti
 
 The slot time determines how many seconds after the beginning of each interval
 a tracker should beacon. The beginning of each interval is defined by the top of
-the hour, and intervals run successively for the remainder of the hour.
+the UTC hour\footnote{Specifying to use UTC time is remarkably 
+	important, since UTC and GPS time have currently diverged by 16 seconds due to
+	only UTC including leap seconds. Most, but not all, GPS receivers correctly
+	compensate for this variable offset and report correct UTC time in their
+GPRMC sentences}, and intervals run successively for the remainder of the hour.
 For example, a tracker configured to time slot with an interval of 550 seconds and
 a time slot of 12 would beacon at the following times:
 \begin{itemize}
@@ -328,13 +332,13 @@ IF (secs_since_beacon> beacon_rate)
 \end{figure}
 
 
-\section{Path Recommendations}
+%\section{Path Recommendations}
 
-\begin{itemize}
-\item Fixed site: WIDE2-1 or literal Digis
-\item Mobile: WIDE1-1,WIDE2-1
-\item Airbore: No path
-\item Weather Stations: WIDE2-2?
-\item Proportional pathing
-\end{itemize}
+%\begin{itemize}
+%\item Fixed site: WIDE2-1 or literal Digis
+%\item Mobile: WIDE1-1,WIDE2-1
+%\item Airbore: No path
+%\item Weather Stations: WIDE2-2?
+%\item Proportional pathing
+%\end{itemize}
 
