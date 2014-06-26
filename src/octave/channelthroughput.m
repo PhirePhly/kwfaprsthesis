@@ -10,7 +10,7 @@ plot(g,s);
 xlabel('G, channel traffic');
 ylabel('S, channel throughput');
 
-print('poissonthroughput.png');
+print('poissonthroughput.eps');
 
 % Slotted ALOHA
 figure(2);
@@ -21,5 +21,5 @@ plot(g,sslot, 'r');
 xlabel('G, channel traffic');
 ylabel('S, channel throughput');
 
-print('slottedthroughput.png');
+print('slottedthroughput.eps');
 
