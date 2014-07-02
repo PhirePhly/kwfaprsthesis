@@ -9,7 +9,7 @@ xpts3002 = [300 500 500 2500 2500 3000 3000 2500 2500 500 500 300];
 ypts3002 = [3 3 2 2 3 3 -12 -12 -8 -8 -12 -12];
 fill(xpts3002, ypts3002, [0.7; 0.7; 0.7])
 xlabel('Audio Frequency [Hertz]');
-ylabel('Relative Magnitude [dB]');
+ylabel('Allowable Relative Magnitude [dB, 1004Hz]');
 axis([0 3200 -13 4]);
 set(gca, 'xtick', [300 500 1004 1200 2200 2500 3000]);
 set(gca, 'ytick', [-12 -8 0 2 3]);
