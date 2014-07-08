@@ -54,7 +54,21 @@ plot(turn_speed,turn_thresh);
 axis([0 upper_speed 0 90]);
 xlabel('Tracker Velocity [MPH]');
 ylabel('Heading Change Threshold [degrees]');
-set(gca, 'ytick', [0 22 30 45 67 90]);
+set(gca, 'ytick', [0 10 20 30 40 50 60 70 80 90]);
 grid on;
 
 print('smartcorner.eps');
+
+
+figure(4);
+Fullaudio = wavread('AA.wav');
+Aaudio = Fullaudio(5916:6283);
+bitnum=-0.5:1200/44100:11;
+plot(bitnum(1:368),Aaudio);
+axis ([0 9 -0.8 0.8]);
+xlabel('Symbol Period');
+ylabel('Signal Magnitude');
+set(gca, 'xtick', [1 2 3 4 5 6 7 8]);
+grid on;
+
+print('bell202A.eps');
