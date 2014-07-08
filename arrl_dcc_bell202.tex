@@ -13,8 +13,6 @@
 % source code typesetting
 \usepackage{algpseudocode}
 \usepackage{listings}
-% Force floats right where I want them
-\usepackage{float}
 % Source code listings
 \usepackage{listings}
 % Implement the ARRL's oddly specific margin and page number equirements
@@ -489,30 +487,27 @@ This sequence can be broken into the following stages:
 	\item Modem Data Carrier Detect (DCD) of the received signal
 \end{itemize}
 
-\begin{figure}[H]
-	\begin{center}
-	\begin{tabular}{ | c || c | c || c |}
-		\hline
-		Radio Model & RX-TX Time & TX-RX Time & QST Issue \\ \hline
-		Yaesu FT-2600M & 55ms & 60ms & Dec 1999 \\ \hline
-		Icom IC-910H & 32ms & 70ms & May 2001 \\ \hline
-		Kenwood TM-271A & 72ms & 88ms & Mar 2004 \\ \hline
-		Yaesu FT-7800R & 190ms & 98ms & Apr 2004 \\ \hline
-		Yaesu FT-8800R & 120ms & 190ms & May 2005 \\ \hline
-		Icom ID-800H & 55ms & 173ms & Nov 2005 \\ \hline
-		Kenwood TM-V708A & 56ms & 86ms & Apr 2006 \\ \hline
-		Yaesu FT-1802M & 77ms & 130ms & Jun 2006 \\ \hline
-		Kenwood TM-V71A & 75ms & 102ms & Nov 2007 \\ \hline
-		Icom IC-2820H & 43ms & 110ms & Nov 2007 \\ \hline
-		Kenwood TM-D710A & 75ms & 106ms & Feb 2008 \\ \hline
-		Yaesu FT-1900R & 74ms & 150ms & May 2010 \\ \hline
-		Yaesu FTM-350R & 134ms & 70ms & Jan 2011 \\ \hline
+\begin{center}
+\begin{tabular}{ | c || c | c || c |}
+	\hline
+	Radio Model & RX-TX Time & TX-RX Time & QST Issue \\ \hline
+	Yaesu FT-2600M & 55ms & 60ms & Dec 1999 \\ \hline
+	Icom IC-910H & 32ms & 70ms & May 2001 \\ \hline
+	Kenwood TM-271A & 72ms & 88ms & Mar 2004 \\ \hline
+	Yaesu FT-7800R & 190ms & 98ms & Apr 2004 \\ \hline
+	Yaesu FT-8800R & 120ms & 190ms & May 2005 \\ \hline
+	Icom ID-800H & 55ms & 173ms & Nov 2005 \\ \hline
+	Kenwood TM-V708A & 56ms & 86ms & Apr 2006 \\ \hline
+	Yaesu FT-1802M & 77ms & 130ms & Jun 2006 \\ \hline
+	Kenwood TM-V71A & 75ms & 102ms & Nov 2007 \\ \hline
+	Icom IC-2820H & 43ms & 110ms & Nov 2007 \\ \hline
+	Kenwood TM-D710A & 75ms & 106ms & Feb 2008 \\ \hline
+	Yaesu FT-1900R & 74ms & 150ms & May 2010 \\ \hline
+	Yaesu FTM-350R & 134ms & 70ms & Jan 2011 \\ \hline
 
-	\end{tabular}
-	\caption{RX-TX and TX-RX turnaround times for VHF mobile radios as published in QST}
-	\end{center}
-	\label{fig:TXRXtime}
-\end{figure}
+\end{tabular}
+%\caption{RX-TX and TX-RX turnaround times for VHF mobile radios as published in QST}
+\end{center}
 
 Since most Amateur Bell 202 packet activity is done using amateur VHF mobile radios,
 a survey was performed of ARRL QST hardware reviews published on VHF-capable
