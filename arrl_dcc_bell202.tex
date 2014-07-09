@@ -22,7 +22,7 @@
 
 \title{Clarifying the Amateur Bell 202 Modem}
 
-\author{Kenneth Finnegan, W6KWF\\
+\author{Kenneth W. Finnegan, W6KWF\\
 \small Masters Student, Electrical Engineering Department\\
 \small California Polytechnic State University, San Luis Obispo\\
 \small \texttt{http://blog.thelifeofkenneth.com/}\\
@@ -46,7 +46,7 @@ Bridget Benson, Ph.D.\\
 	of the earliest packet systems still enjoys a wide user base
 	in several of the major amateur packet networks still in operation.
 	Oddly, despite being one of the longest-lived amateur packet modulations in use,
-	the amateur community seems to have neglected to ever write a detailed
+	the amateur radio community seems to have neglected to ever write a detailed
 	specification document for this integral part of so many packet systems.
 	This paper presents information garnered from several sources
 	in the hopes that other amateur radio operators developing modems for 
@@ -89,7 +89,7 @@ the physical layer implicitly includes the High-Level Data Link Control (HDLC)
 protocol for framing and bit stuffing \cite{n1vgphy}.
 Since using HDLC with Bell 202 modems is so implicit in amateur radio systems, 
 the layer 1 packet protocol should be called Amateur Bell 202, to
-distinguish it from the original Bell 202 beveloped by AT\&T.
+distinguish it from the original Bell 202 developed by AT\&T.
 
 One implication of using HDLC is that frames are not encoded using the
 original 1200Hz mark and 2200Hz space symbols,
@@ -149,11 +149,11 @@ Bell 202 transmission. There are a number of important facets to note:
 			with firmware r56474 inserts 3 flags before
 		a frame, 7 flags between two frames, and 5 flags after the final frame.}
 		Tests indicate that the number of flags between frames 
-		impact throughput of the following frame, yet
+		impacts throughput of the following frame, yet
 		quantitative measurements of this effect proved elusive.
 	\item The frame payload and frame checksum must be bit stuffed such 
 		that no string of more than five 1's appear in a row.
-		This is done by ``bit-stuffing" the transmitted bitsteam by
+		This is done by ``bit-stuffing" the transmitted bitstream by
 		appending a zero after any string of five ones at the transmitter,
 		and subsequently dropping this zero following five ones at the 
 		receiver.\footnote{Six ones in a row represent a 0x7E flag indicating 
@@ -171,7 +171,7 @@ Bell 202 transmission. There are a number of important facets to note:
 		\ref{fig:bell202format} aren't enforced by any properties of 
 		Bell 202 or HDLC, but from the Maximum Transmission Unit (MTU)
 		specified in the AX.25 network stack.
-		Larger frames are possible, and were often used in specialized 
+		Larger frames are possible and were often used in specialized 
 		AX.25 and IPv4 packet networks \cite{pattersoninterview}.
 
 \end{itemize}
@@ -187,7 +187,7 @@ This change was made because including the frame checksum and flags
 in the layer 2 documentation confuses the separation between Bell 202 
 and AX.25. 
 
-This is particularly important when AX.25 packets are transfered across 
+This is particularly important when AX.25 packets are transferred across 
 other layer 1 links with their own framing protocols.
 The Keep It Simple Stupid (KISS) serial link between 
 a host system and modem is the most notable
@@ -253,7 +253,6 @@ correct sequence, starting with the MSb and finishing with the LSb.
 
 
 \begin{figure}
-	\begin{center}
 	\begin{algorithmic}[1]
 		\Function{calculate\_crc}{$frame[~], frame\_length$}
 		\State $crc \gets \texttt{0xFFFF}$
@@ -278,7 +277,6 @@ correct sequence, starting with the MSb and finishing with the LSb.
 		\EndFunction
 	\end{algorithmic}
 	\caption{Algorithm to calculate CRC-16-CCITT in reverse-bit order.}
-	\end{center}
 	\label{fig:crcccittcode}
 \end{figure}
 
@@ -305,7 +303,7 @@ This proposal is complicated by two major issues:
 		used by individual network nodes.
 \end{itemize}
 
-The VHF service monitor needed to properly set modem deviation is prohibitively
+The VHF deviation meter needed to properly set modem deviation is prohibitively
 expensive for the typical packet radio operator, so presenting a figure 
 such as 3.5kHz deviation to most users makes little difference.
 Qualitative and home-brew solutions have been developed
@@ -367,10 +365,11 @@ at least sense when a collision has taken place
 and use that information to abort the transmission of the rest of the frame.
 
 Besides the degenerate case of ignoring the current channel status completely when 
-deciding to transmit a pending frame\footnote{This is a surprisingly
+deciding to transmit a pending frame,\footnote{This is a surprisingly
 	common channel access method, used primarily by what are called ``dumb" or
-	``deaf" APRS trackers, which are transmit-only and entirely lack an
-FM receiver altogether.}, there are two popular algorithms used for
+	``deaf" APRS trackers, which are transmit-only and lack an
+FM receiver altogether. One popular example is the Micro-Trak AIO by Byonics}
+there are two popular algorithms used for
 channel access in North America;
 DWait and P-persistent.
 
@@ -451,7 +450,7 @@ of bits per second throughput.
 One aspect of Bell 202 that is appealing, other than the 
 huge legacy systems still using it, is it's relative simplicity.
 The fact that amateurs are able to implement Bell 202 modems on
-systems as minimalistic as 8 bit microcontrollers, and these modems can 
+systems as minimalistic as 8 bit microcontrollers, and that modems can 
 interface with standard voice radios without requiring internal modification, 
 make Bell 202 much more accessible than more sophisticated modulations.
 
@@ -483,7 +482,7 @@ This sequence can be broken into the following stages:
 	\item RF propagation from transmitter to receiver (negligible)
 	\item Receiver opening squelch and delivering AFSK signal to modem
 		(While not usually measured, a representative measurement is
-		the TX-RX turnaround time)
+		the TX-RX turnaround time \cite{pattersoninterview})
 	\item Modem Data Carrier Detect (DCD) of the received signal
 \end{itemize}
 
@@ -510,7 +509,7 @@ This sequence can be broken into the following stages:
 \end{center}
 
 Since most Amateur Bell 202 packet activity is done using amateur VHF mobile radios,
-a survey was performed of ARRL QST hardware reviews published on VHF-capable
+a survey was performed of ARRL QST magazine hardware reviews published on VHF-capable
 mobile radios since 1999.
 These reviews included RX-TX and TX-RX turnaround times
 which indicate that a significantly longer SLottime is needed than the 
@@ -571,7 +570,7 @@ It is the author's opinion that a new default of 300ms for modems be considered.
 
 	\bibitem{aprsunveiled}
 		B. Simmons,
-		``APRS Unveiled," in \emph{QEX},
+		``APRS Unveiled," in \emph{QEX Magazine},
 		pp.~19-23,
 		Nov./Dec. 2012.
 
