@@ -44,19 +44,59 @@ Bridget Benson, Ph.D.\\
 	and applications. 
 	Despite its age, the 1200 baud Bell 202 modulation used in some
 	of the earliest packet systems still enjoys a wide user base
-	in several of the major amateur packet networks still in operation.
+	in several of the major amateur packet networks.
 	Oddly, despite being one of the longest-lived amateur packet modulations in use,
-	the amateur radio community seems to have neglected to ever write a detailed
+	the amateur radio community seems to have neglected to write a detailed
 	specification document for this integral part of so many packet systems.
-	This paper presents information garnered from several sources
-	in the hopes that other amateur radio operators developing modems for 
-	this prototypical modulation
-	don't need to invest the same level of energy in researching the subject.
+	This paper presents information gathered from network protocol
+	specifications and amateur packet radio articles 
+	to assist other amateur radio operators implementing modems for 
+	this prototypical modulation.
 	
 	
 	\textbf{Keywords:} AFSK, AX.25, Bell 202, Packet Radio, Specification
 \end{abstract}
 
+\section{Introduction}
+
+The primary goal of this paper is to give the reader
+a sufficient number of breadcrumbs to successfully build their own Amateur
+Bell 202 modem.
+The need for this document became apparent to the author while working on his
+master's thesis concerning the Automatic Packet Reporting System (APRS).
+Despite Bell 202 being the underlying modem used by 
+nearly every VHF amateur radio packet network, 
+there doesn't appear to be sufficient documentation
+for a radio amateur to implement their
+own modem compatible with the existing networks.
+
+The rest of this document touches on the most significant aspects of the
+Amateur Bell 202 protocol, including:
+\begin{itemize}
+	\item Pointing out that what amateur radio operators call ``Bell 202"
+		implicitly extends well beyond the original Bell 202. 
+		Therefore, the new term ``Amateur Bell 202"
+		is proposed to differentiate between the entire modem and the 
+		underlying modulation
+	\item Drawing a new line between AX.25 and Amateur Bell 202 to make it clear
+		that error detection is a concern for the modem and not the 
+		data link protocol
+	\item Presenting a reference implementation of the checksum used
+		to detect transmission errors in Amateur Bell 202 frames
+	\item Discussing how the baseband modem signal should be modulated using
+		VHF voice radios and what challenges this presents
+		to modem performance
+\end{itemize}
+
+Despite Amateur Bell 202 often being decried for its age and 
+vastly outliving its usefulness,
+it can't be denied that it is still an integral part of the amateur radio
+digital communications landscape.
+While its deficiencies dictate that Amateur Bell 202 will rarely be the best
+choice for new packet radio networks, 
+its relative simplicity causes
+Amateur Bell 202 to be an appealing gateway into the digital communications hobby.
+		
 
 \section{Bell 202 in Amateur Radio}
 \label{sec:bell202history}
@@ -70,37 +110,39 @@ Bell 202 was popular among amateur radio operators due to the abundance
 of modems available on the second-hand market in 1981 when the FCC authorized
 amateur packet operations in the United States \cite{gatewaypacket}.
 
-\begin{figure}
+\begin{figure}[!b]
 	\centering
 	\includegraphics[width=0.4\textwidth]{src/dia/osi_bell202}
-	\caption{OSI network layers for a typical packet radio application}
+	\caption{OSI network layers for a typical packet radio application. 
+	This paper refers to the entirety of layer 1 as ``Amateur Bell 202"}
 	\label{fig:osibell}
 \end{figure}
 
 There isn't a particularly clean
 mapping of packet radio protocols to the seven layers of the OSI
-network model. To help clarify references to the different layers in this article,
+network model, but one can be formed 
+to help clarify references to the different layers in this article.
 Figure \ref{fig:osibell} shows the example of Bell 202 as used in the 
 Automatic Packet Reporting System (APRS) network stack.
 Due to Amateur radio operators
 using Bell 202 as the modem below AX.25, which is a derivative of
-the X.25 network protocol, 
+the X.25 network protocol \cite[\S1.1]{ax25spec}, 
 the physical layer implicitly includes the High-Level Data Link Control (HDLC) 
 protocol for framing and bit stuffing \cite{n1vgphy}.
 Since using HDLC with Bell 202 modems is so implicit in amateur radio systems, 
-the layer 1 packet protocol should be called Amateur Bell 202, to
+the layer 1 packet protocol should be called ``Amateur Bell 202," to
 distinguish it from the original Bell 202 developed by AT\&T.
 
 One implication of using HDLC is that frames are not encoded using the
-original 1200Hz mark and 2200Hz space symbols,
-but instead use the
+1200Hz mark and 2200Hz space symbols of traditional Bell 202,
+but instead use an
 inverted non-return to zero (NRZI) encoding.
 NRZI calls for zeros in the original bit stream to be encoded as a
-continuous-phase transition between the two frequencies between consecutive symbols, 
+continuous-phase frequency transition between consecutive symbols, 
 while ones are encoded as
 the lack of a frequency change between two symbols \cite{iso13239}.
 Figure \ref{fig:bell202sample} shows a typical Amateur Bell 202
-signal representing the ASCII letter ``A."
+signal representing the ASCII letter ``A," starting with the least significant bit.
 
 \begin{figure}
 	\centering
@@ -110,7 +152,7 @@ signal representing the ASCII letter ``A."
 \end{figure}
 
 
-\section{Bell 202 Transmission Format}
+\section{Amateur Bell 202 Transmission Format}
 
 \begin{figure}
 	\centering
@@ -120,10 +162,10 @@ signal representing the ASCII letter ``A."
 \end{figure}
 
 Figure \ref{fig:bell202format} shows the format of a typical single-frame
-Bell 202 transmission. There are a number of important facets to note:
+Amateur Bell 202 transmission. There are a number of important facets to note:
 \begin{itemize}
 	\item The leading 0x00 octets are mentioned in very few documents
-		discussing Bell 202, yet they reportedly improve modem
+		discussing Amateur Bell 202, yet they reportedly improve modem
 		throughput \cite{millerinterview}\cite{aprsunveiled}. 
 		0x00 encoded in NRZI causes a symbol transition
 		every clock cycle and thus provides a more effective clock 
@@ -134,13 +176,14 @@ Bell 202 transmission. There are a number of important facets to note:
 		which causes it to be the \emph{worst} 
 		octet for asynchronous clock recovery.
 	\item The octet 0x7E is used to indicate the beginning and end of 
-		Bell 202 / HDLC frames.
-		There is little guidance on the number of flag octets before
-		or after frames (represented by N2 and N3 in 
+		HDLC frames.
+		There is little guidance on the number of flag octets needed before
+		or after frames in Amateur Bell 202 (represented by N2 and N3 in 
 		Figure \ref{fig:bell202format})
-		beyond stating that there must be at least one of each. The sum of
+		beyond stating that there must be at least one of each. 
+	\item The sum of
 		N1 and N2 is variable in most modems via the ``TXDelay" parameter,
-		which specifies how long the preamble is in 10ms increments.
+		which specifies how long the preamble should be in 10ms increments.
 	\item It is permissible to encode multiple 
 		frames per transmission, yet there is no guidance as to how
 		many octets of 0x7E be included between them.
@@ -148,10 +191,12 @@ Bell 202 transmission. There are a number of important facets to note:
 		frames.\footnote{For a specific example, the Argent Data OT3m TNC 
 			with firmware r56474 inserts 3 flags before
 		a frame, 7 flags between two frames, and 5 flags after the final frame.}
-		Tests indicate that the number of flags between frames 
-		impacts throughput of the following frame, yet
-		quantitative measurements of this effect proved elusive.
-	\item The frame payload and frame checksum must be bit stuffed such 
+		Tests indicate that many modems are sensitive to the number of flags 
+		before, between, and after frames as mentioned in the last three points.
+		Finding definitive minimums would require testing a representative
+		sample of the
+		popular Amateur Bell 202 modems, which exceeds the author's resources.
+	\item The frame payload and frame checksum must be modified such 
 		that no string of more than five 1's appear in a row.
 		This is done by ``bit-stuffing" the transmitted bitstream by
 		appending a zero after any string of five ones at the transmitter,
@@ -165,36 +210,45 @@ Bell 202 transmission. There are a number of important facets to note:
 		except for the CRC-16-CCITT frame checksum, 
 		which is transmitted big-endian
 		and most-significant bit first.
-		\cite{n1vgphy},\cite[\S8.1.1-2]{ituv42},\cite[\S3.8]{ax25spec}.
-		See section \ref{calcfcs} for further discussion.
-	\item The minimum and maximum payload sizes indicated in figure 
+		\cite[\S3.8]{ax25spec},
+		\cite[\S8.1.1-2]{ituv42},
+		\cite{n1vgphy}.
+		See Section \ref{calcfcs} for further discussion.
+	\item The minimum and maximum payload sizes indicated in Figure 
 		\ref{fig:bell202format} aren't enforced by any properties of 
 		Bell 202 or HDLC, but from the Maximum Transmission Unit (MTU)
-		specified in the AX.25 network stack.
+		specified in the layer 2 AX.25 network protocol.
 		Larger frames are possible and were often used in specialized 
 		AX.25 and IPv4 packet networks \cite{pattersoninterview}.
+		A practical upper limits on frame size is enforced by
+		the need for successful frames to be completely error-free.
+
 
 \end{itemize}
 
-\subsection{Excluding HDLC from AX.25 layer 2}
+\subsection{Excluding HDLC from Layer 2 AX.25}
 
 It is important to note that the presentation of the HDLC framing
 and checksum
-in figure \ref{fig:bell202format} as part of the layer 1 modulation 
+in Figure \ref{fig:bell202format} as part of the layer 1 modulation 
 instead of as part of the layer 2 AX.25 frame is 
 novel to this work and hasn't been seen in any of the existing literature.
 This change was made because including the frame checksum and flags
-in the layer 2 documentation confuses the separation between Bell 202 
+in the layer 2 documentation confuses the separation between Amateur Bell 202 
 and AX.25. 
 
-This is particularly important when AX.25 packets are transferred across 
-other layer 1 links with their own framing protocols.
+This is particularly important when AX.25 packets are transported across 
+other layer 1 links which use their own framing protocols.
 The Keep It Simple Stupid (KISS) serial link between 
 a host system and modem is the most notable
-transport where the HDLC fields are not included and are instead 
-post-facto generated by the Bell 202 modem during transmission \cite{KISSspec}.
+transport where the HDLC fields are not included in outgoing frames, 
+and are instead 
+post-facto generated by the modem during transmission\footnote{The opposite
+	is also true; incoming frames with correct checksums have them stripped,
+	and incorrect checksums cause the frame to be dropped and never
+transported over the KISS link.} \cite{KISSspec}.
 M. Chepponis and P. Karn made the technically correct decision of excluding 
-HDLC framing from the AX.25 payload when developing KISS, but this caused
+HDLC framing from the AX.25 payload when developing KISS, but this causes
 an unfortunate situation where KISS is transporting an entirely
 undocumented fragment of the AX.25 packet. Figure \ref{fig:ax25format} 
 presents the AX.25 layer 2 protocol as it should be documented without
@@ -213,44 +267,49 @@ the layer 1 HDLC framing.
 
 The Frame Check Sum (FCS) used for error detection is the well-known CRC-16-CCITT, 
 which enjoys a wide deployment in network protocols and 
-systems\footnote{Example systems include HDLC, Bluetooth, the XMODEM file 
-transfer protocol, and SD cards.}.
+systems.\footnote{Example systems using CRC-16-CCITT include HDLC, 
+	Bluetooth, the XMODEM file 
+transfer protocol, and SD cards.}
 Unfortunately, the language used in \S4.2.5 of the ISO specification for
 HDLC \cite{iso13239} is particularly awkward, 
-and doesn't lend itself well to implementation.
+and does not lend itself well to implementation.
 For the sake of clarity, Figure \ref{fig:crcccittcode} 
 presents one possible algorithm to
-calculate the FCS of a complete frame.
+calculate the FCS of a complete frame, which is implemented in ANSI C in 
+Appendix \ref{sec:crcref}.
 The constant 0x8408 comes from a bit reversal of the 0x1021 generator polynomial
 since the presented algorithm calculates the CRC in bit reversed order.
 
 The order of the two octets and bit order of the checksum 
 as transmitted over the air 
-is particularly muddled in the existing amateur radio literature, 
-since many sources call for sending the
+is particularly muddled in the existing amateur radio literature.
+Many sources call for sending the
 checksum little-endian, while ITU V.42 \S8.1.2.3 specifies big-endian,
 as is the convention for most network protocols.
 The original specifications also call for transmitting the checksum most
 significant bit (MSb) first, which is the opposite of the payload octets.
-This exception is noted in \S3.8 of the AX.25 specification, 
-but never appears to be handled by most Amateur Bell 202 
-implementations\footnote{Examples include TNC-X and APRX.}.
+This exception is noted in \S3.8 of the AX.25 specification as well.
 
-This confusion likely comes from most amateurs copying
-available reference implementations of the CCITT checksum that, 
-unbeknownst to the amateur, already integrate the called for bit reversal 
+This creates plenty of confusion on the part of implementers, 
+which is likely caused by the fact that 
+available reference implementations of the CCITT checksum don't
+make it clear that they already integrate the needed bit reversal 
 after the Cyclic Redundancy Check (CRC) division and one's complement.
 The algorithm presented in Figure \ref{fig:crcccittcode} 
 \emph{does not} calculate the true CCITT CRC checksum, but
 follows the convention of
 calculating it in reverse-bit order, such that the final bit-reversal step 
-can be omitted during modulation of the bit stream.
+may be omitted during modulation of the bit stream.
 Therefore, the checksum as presented should be sent lower octet first, 
 using the same modulator as for payload octets that modulates the 
 least significant bit (LSb) first.
 This ensures that the resulting checksum as transmitted will have the 
-correct sequence, starting with the MSb and finishing with the LSb.
-
+correct sequence, starting with the MSb and finishing with the LSb,
+and is why many implementations appear to completely ignore the
+need to send the FCS MSb.
+Calculating the FCS in reverse bit order and then modulating it in LSb
+instead of MSb order cancel each other out, and alleviates the need for 
+the modulator to handle the FCS differently than the rest of the frame.
 
 \begin{figure}
 	\begin{algorithmic}[1]
@@ -282,12 +341,13 @@ correct sequence, starting with the MSb and finishing with the LSb.
 
 \section{FM Deviation and Emphasis}
 
-Once the HDLC frame is generated, encoded using NRZI, and converted into
+Once the Amateur Bell 202 frame is generated, encoded using NRZI, and converted into
 a baseband AFSK signal, it still needs to be converted into a VHF FM signal
 and transmitted to other stations. 
 Since Bell 202 was originally designed for telephone data service, 
 the existing specifications give no guidance on the unique 
-aspects of the amateur VHF FM physical layer, such as what 
+aspects of the amateur VHF FM physical layer. 
+One such issue is what value of
 FM deviation to target when setting modem audio levels.
 
 While quantitatively justifying this figure is beyond the ability of the
@@ -305,9 +365,9 @@ This proposal is complicated by two major issues:
 
 The VHF deviation meter needed to properly set modem deviation is prohibitively
 expensive for the typical packet radio operator, so presenting a figure 
-such as 3.5kHz deviation to most users makes little difference.
+such as 3.5kHz deviation to most users does little good.
 Qualitative and home-brew solutions have been developed
-for setting deviation levels\cite{n8urdev},
+for setting deviation levels \cite{n8urdev},
 and these techniques should be better promoted until 
 deviation meters become a more standard part of a packet operator's toolkit. 
 
@@ -316,7 +376,7 @@ higher baseband frequencies are modulated with larger deviation
 than lower frequencies
 to provide a consistent signal-to-noise ratio across the channel.
 Unfortunately, the advantages of these audio filters to packet operation 
-are debatable, and they are not applied consistently. A given packet 
+are debatable, and they are not applied consistently. A single packet 
 station is likely to have any permutation of pre-emphasized or flat 
 transmit audio and de-emphasized or flat receive audio.
 This means that even when one station deliberately uses flat audio,
@@ -330,13 +390,14 @@ One suitable source for such a benchmark would be to go back to the
 telephone networks where Bell 202 was originally used.
 Figure \ref{fig:3002} shows the allowable audio distortion of a basic type 3002
 channel as used in the telephone network; any level of distortion that falls 
-inside the shaded region relative to a test tone at 1004 Hz is considered acceptable.
+inside the shaded region relative to a test tone at 1004 Hz is considered 
+acceptable \cite{alisouskas}.
 
 For application to Amateur Bell 202, 
 normalizing the distortion thresholds to 1004Hz is 
 less important than simply noting that the allowable distortion between the two
 tones of interest (1200Hz and 2200Hz) is 10dB in either direction.
-A meaningful measurement for Bell 202 modem designers would be testing how
+An insightful measurement for Bell 202 modem designers would be testing how
 quickly their modem's performance falls off as a packet signal approaches 
 the $\pm$10dB limits.
 Creating a test suite which could yield quantitative
@@ -358,11 +419,16 @@ Since Amateur Bell 202 is a half duplex modulation using re-purposed
 FM voice transceivers, 
 one of the challenges to packet radio is avoiding multiple stations
 transmitting on the same channel at once. 
-Other derivatives of ALOHAnet, 
-such as half duplex 10Mbps Ethernet, 
-enjoy the advantage that transmitters can
+This is done using Carrier Sense Multiple Access (CSMA),
+where each station listens before transmitting to see if the channel is clear.
+Unlike other CSMA implementations,
+such as IEEE 802.3 Ethernet, 
+Amateur Bell 202 doesn't enjoy the advantage that transmitters can
 at least sense when a collision has taken place 
-and use that information to abort the transmission of the rest of the frame.
+and use that information to abort the transmission of the rest of the frame early.
+When a collision takes place on an Amateur Bell 202 channel, 
+both colliding frames are transmitted in their entirety, but both are lost
+and the channel time wasted.
 
 Besides the degenerate case of ignoring the current channel status completely when 
 deciding to transmit a pending frame,\footnote{This is a surprisingly
@@ -380,12 +446,12 @@ This lends itself well to designed networks
 where the relative priority of each station is known and a corresponding DWait time
 is set for each station where a shorter DWait will 
 always gain the channel over a longer one. 
-Conversely, this doesn't lend itself well to ad-hoc networks.
-Two stations that happen to both operate near one another 
+Conversely, this doesn't lend itself well to ad-hoc networks,
+since two stations that happen to both operate near one another 
 with similar DWait parameters
-and pending traffic will tend to collide and reduce throughput.
+will tend to collide and reduce throughput.
 
-P-persistent is a stochastic algorithm that attempts to fairly spread
+P-persistent is a stochastic algorithm that attempts to randomly spread
 stations apart when the channel becomes clear. 
 This is configured with two variables: the slot time (SLottime), and the
 probability that a station should choose to transmit during a given slot (PErsist). 
@@ -394,17 +460,18 @@ should be set to as short of a time interval as possible during which a station 
 reliably identify another station as transmitting 
 before beginning its own transmission.
 The PErsist value should be tuned based on how likely another station is to transmit 
-considering the number of other stations with 
+during the same time slot considering the number of other stations with 
 pending traffic attempting to gain the channel.
 
-A typical modem supporting the p-persist algorithm will need three values adjusted
+A typical modem supporting the p-persistent algorithm will need three values adjusted
 based on the specific network hardware in use; PErsist, SLottime, and the 
 transmitter preamble time TXDelay mentioned earlier in this paper.
 
 \begin{itemize}
 	\item PErsist: Measured in units of 1/256, the suggested default is
 		63, which translates into a 0.25 chance of selecting a specific available
-		slot. A typical implementation selects a random number in the range
+		slot \cite{KISSspec}. 
+		A typical implementation selects a random number in the range
 		[0,255] and tests if it is equal or less than the PErsist value.
 		Therefore, a setting of 0 would result in a 0.004 chance of selecting 
 		a slot and a setting of 255 would result in always selecting an open slot.
@@ -417,18 +484,19 @@ transmitter preamble time TXDelay mentioned earlier in this paper.
 		is a value of 10 (100ms) \cite{KISSspec}\cite{kamplusref}, 
 		but performance measurements of contemporary VHF radios 
 		indicate a need for a longer slot time. 
-		The new suggested value is 30 (300ms).
+		The new suggested value is 30 (300ms), which is discussed further
+		in Appendix \ref{sec:vhftxrx}.
 	\item TXDelay: Measured in units of 10ms increments, the suggested
 		default is a value of 50, which translates into a 500ms synchronization
 		preamble from when a transmitter is keyed up until when a payload
-		frame is transmitted.
+		frame is transmitted \cite{KISSspec}.
 		This value is very conservative and can usually be reduced when
 		receiving stations are properly configured with
 		well aligned clock recovery mechanisms.
 \end{itemize}
 
 There are additional channel access methods beyond the two mentioned
-that are applied in amateur packet networks. 
+that are applied in amateur radio packet networks. 
 Examples include Demand Assigned Multiple Access (DAMA),
 which is primarily used in European packet networks,
 and Time Slotting, which is used in carefully designed high-throughput networks.
@@ -439,39 +507,40 @@ this is not a comprehensive survey of channel access methods.
 \section{Conclusion}
 
 
-By most measures, Bell 202 is a very poor performing modulation to
+By most measures, Amateur Bell 202 is a very poor performing modulation to
 be used by amateurs for packet operations. 
 One-bit symbols cause Bell 202 to suffer from poor spectral efficiency,
 HDLC lacks any error correcting codes so single-bit errors cause entire 
-frames to be dropped, and 1200 bits per second is a remarkably slow
+frames to be dropped, and 1200 bits per second is a remarkably low
 data rate when even consumer radio systems are operating at hundreds of millions
 of bits per second throughput.
 
-One aspect of Bell 202 that is appealing, other than the 
+One aspect of Amateur Bell 202 that is appealing, other than the 
 huge legacy systems still using it, is it's relative simplicity.
-The fact that amateurs are able to implement Bell 202 modems on
+The fact that amateurs are able to implement Amateur Bell 202 modems on
 systems as minimalistic as 8 bit microcontrollers, and that modems can 
-interface with standard voice radios without requiring internal modification, 
-make Bell 202 much more accessible than more sophisticated modulations.
+interface with unmodified voice radios,
+make Amateur Bell 202 much more accessible than more sophisticated protocols.
 
 Faster data rates and more sophisticated modems should never be discouraged,
 but the value of being able to learn about amateur digital communications 
 via the simplicity of Bell 202 shouldn't be discounted.
-Unfortunately, as the technological landscape where 
-protocols such as Amateur Bell 202 or AX.25 
+Unfortunately, as the technological context where 
+protocols such as Amateur Bell 202
 were developed moves further into the past,
-the need to write additional documentation that gives sufficient context to 
+the need to write additional documentation for
 the next generation of packet radio operators is going to become increasingly 
 critical to the digital communications aspect of the amateur radio hobby.
 
 
 \appendix
 \section{Reference CRC-16-CCITT Implementation}
+\label{sec:crcref}
 \texttt{
 \lstinputlisting{src/crccalc.c}
 }
 \section{SLottime Justification}
-\label{vhftxrx}
+\label{sec:vhftxrx}
 
 The SLottime parameter of modems is dependent upon the total time
 it takes for one station to begin transmitting and for receiving stations
@@ -513,8 +582,12 @@ a survey was performed of ARRL QST magazine hardware reviews published on VHF-ca
 mobile radios since 1999.
 These reviews included RX-TX and TX-RX turnaround times
 which indicate that a significantly longer SLottime is needed than the 
-traditionally suggested 100ms.
-It is the author's opinion that a new default of 300ms for modems be considered.
+traditionally suggested 100ms. 
+This is due to \emph{none} of the evaluated radios
+being fast enough to key up, a second radio to open squelch, 
+and then allow any time for modem DCD before the end of a slot.
+It is the author's opinion that a new default of 300ms SLottime 
+for modems be considered.
 
 \begin{thebibliography}{99}
 
@@ -522,6 +595,11 @@ It is the author's opinion that a new default of 300ms for modems be considered.
 		J. Ackermann,
 		``Setting Your TNC's Audio Drive Level."
 		\url{http://www.febo.com/packet/layer-one/transmit.html}
+
+	\bibitem{alisouskas}
+		V. F. Alisouskas, W. Tomasi, 
+		\emph{Digital and Data Communications}.
+		Englewood Cliffs, New Jersey: Prentice-Hall, Inc, 1985.
 
 	\bibitem{202tspec}
 		American Telephone and Telegraph Company,
