@@ -21,7 +21,7 @@ a typical APRS network would advertise information such as:
 \end{itemize} 
 
 Despite these flexible capabilities, 
-and much to the chagrin of many of the designers of APRS, 
+and much to the chagrin of many of the original designers of APRS, 
 the vast majority of user traffic on the APRS network consists solely of 
 real-time automatic vehicle tracking (AVT).
 Fittingly, it follows that one of the hotbeds for APRS network congestion
@@ -33,36 +33,10 @@ that under-cuts any specific guidance on what to expect from the network.
 
 The author is more interested in being able to make concise statements about 
 APRS in general than construct an entirely exhaustive analysis, 
-so the reader need only appreciate that LA is the exception to the rules.
+so the reader need only appreciate that places like LA are the exception to the rules.
 Any readers operating in the LA basin have the author's heart-felt condolences,
 but need look elsewhere for definitive guidance on operating in such a unique
 part of the APRS network.
-
-\section{Goals of This Document}
-
-One of the greatest failings of amateur packet radio is the lack of definitive
-collections of documentation on the complete protocol stacks currently used in 
-networks such as APRS. This is understandable as the task of documenting a 
-system as complex as APRS is momumental and requires digging through decades of 
-relevant standards, magazine articles, and personal diatribes made by amateurs
-infulential in the field.
-
-The body of this document is divided into three sections loosely based on the 
-three lowest layers of the OSI seven layer network model. Many portions of the APRS
-protocol stack
-pre-date the OSI model, and maintaining clean separation of layers even in 
-contemporary protocols is challenging, so the lines drawn in this document should
-be viewed with a level of forgiveness by the reader. More importantly, these three
-layers are drawn to aid future work on experimenting with physical modulation 
-and data link protocols underneath the APRS packet application.
-
-While some of these differentiations already exist in the standing literature,
-this document isn't holding itself bound to the existing implicit conventions.
-One example is the likely controversial separation made between Bell 202 and 
-AX.25 where I (the author?) have gone as far as to
-remove the Frame Checksum (FCS) from AX.25 packets all together and place them
-instead in the Bell 202 frame, motivated by the fact that AX.25 packets are moved
-across other physical channels such as KISS without the required FCS.
 
 \section{History of APRS}
 
@@ -75,6 +49,9 @@ Near-ubiquitious access to the Internet caused the decline in local BBS
 systems and AX.25 TCP/IP networks during the 1990s, but APRS has 
 continued to enjoy a growing userbase due to it filling a unique 
 application of amateur packet radio to local short-lived communication.
+The 1200 baud Bell 202 modems used for AX.25 are often bemoaned for having
+such a low data rate, but proves to be plenty of bandwidth for the short periodic
+text messages involved in APRS.
 
 APRS supports basic communication between stations via node to node 
 text messages and comment field status updates, but should not be 
@@ -96,4 +73,127 @@ operational objective of the APRS network and usually proves to only be
 detrimental to the network and other users as network throughput is 
 consumed by advertisements for 
 resources beyond the radius of interest for the local operator.
+
+\section{Physical Topology and Hardware}
+
+A typical APRS network consists of three types of stations:
+\begin{itemize}
+	\item Trackers - These are mobile radios, often installed in vehicles with
+		a GPS receiver, that periodically advertise their physical location
+		along with any additional information including what other frequencies
+		the operator is listening on.
+	\item Digipeaters - These are half-duplex digital repeaters that build the
+		backbone of an APRS network, allowing stations to interact with other
+		stations beyond their immediate radio range. This is done by immediately
+		repeating any received packets which request being repeated from the
+		digi's higher location.
+	\item I-gates - Internet gateways are stations usually installed in homes
+		that act as bridges between the local APRS network on RF and the
+		world-wide APRS-IS (Internet System) network, which uses the Internet
+		to aggregate and route all of the APRS traffic generated in each
+		local network to one unified network.
+\end{itemize} 
+
+As each tracker beacons its information for the local network, it is repeated
+by the digipeaters for consumption by other local stations, and gatewayed
+to the Internet by any I-gates that receive the packet along the way. 
+Figure \ref{fig:demonetwork}
+shows the typical path of a packet from a low-powered handheld tracker as it moves
+throughout the local APRS network. It's not unusual for battery-powered trackers to
+only output one to five watts of RF power, which limits their range to any stations
+immediately around them. 
+Since digipeaters are often higher power with 
+high-quality antennas, them repeating packets from these low-power trackers 
+greatly increases their range and usefulness.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\textwidth]{src/dia/demonetwork}
+	\caption{Example packet path from a handheld APRS tracker}
+	\label{fig:demonetwork}
+\end{figure}
+
+\subsection{Station Block Diagrams}
+
+Like most aspects of the APRS network, there are countless options 
+when it comes to assembling an APRS node from the parts on-hand.
+This section presents block diagrams for the three most common ways
+to assemble trackers, digipeaters, and I-gates, but additional permutations
+of these and entirely different topologies are possible.
+
+Blocks presented as dotted lines are optional. The ``Transceiver" blocks refer to 
+VHF FM amateur radios. ``Terminal Node Controllers" are the modems and radio
+interfaces with minimal embedded intelligence. These blocks and the labeled protocols
+between blocks will be expanded upon in later chapters.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{src/dia/tracker}
+	\caption{Block diagram for typical APRS tracker}
+	\label{fig:blocktracker}
+\end{figure}
+
+Figure \ref{fig:blocktracker} shows the block diagram for an APRS tracker, 
+which is built around a Terminal Node Controller which parses NEMA positions
+provided by a GPS receiver and convert them into APRS position reports that
+are then frequency shift modulated and sent to a VHF FM voice transceiver using an
+interface cable that includes transmit and receive audio, as well as a line to
+key the ``push to talk" button on the radio to start transmitting.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{src/dia/tnc_digi}
+	\caption{Block diagram for typical APRS Digipeater}
+	\label{fig:blockdigi}
+\end{figure}
+
+Figure \ref{fig:blockdigi} shows the block diagram for a digital repeater, which
+is much the same as for a tracker except that the GPS receiver is often ommited. 
+Since the digipeater is always installed in a fixed location, its GPS coordinates
+can be hard-coded into non-volatile memory in the TNC.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{src/dia/igate_kiss}
+	\caption{Block diagram for typical APRS Internet Gateway}
+	\label{fig:blockigate}
+\end{figure}
+
+Figure \ref{fig:blockigate} shows the block diagram for an Internet Gateway, which
+like the digipeater doesn't require a GPS receiver. Unlike the digipeater,
+instead of sending received packets back out through the VHF transceiver,
+I-gates send received packets to the APRS-IS Internet System via a local connection
+to the Internet.
+
+
+\section{Document Overview}
+
+The rest of this document is going to start at the bottom of the APRS protocol
+stack and work its way up, touching on each layer with an introduction and
+some basic analysis. 
+Ideally, this document would answer all of the ambiguities existing in the
+APRS network protocols, but many of the issues that will be touched upon 
+deserve an entire masters thesis of their own, and therefore will only
+be noted as currently definicient. 
+Any readers still shopping for a thesis subject or senior project should 
+continue reading with bated breath, as this topic is ripe with further 
+work.
+
+Part \ref{part:physical} will cover the Bell 202 modem used to encode APRS on
+the VHF packet channels and the KISS protocol used to connect modems to
+host devices such as computers. Chapter \ref{chap:bell202} will go into an
+unusual amount of detail since a specification document for Amateur Bell 202
+was never written and therefore will likely prove to be one of the more significant
+contributions of this paper to the field.
+
+Part \ref{part:datalink} will touch on what could be called the data link layer
+of APRS. It will start with an introduction to the concept of a terminal
+node controller, move into how the AX.25 protocol has been modified for APRS, and
+finally discuss the digipeater behavior needed to flood packets from their
+originating stations throughout the network.
+
+Finally, part \ref{part:network} will discuss the popular algorithms used to 
+determine how and when an individual node should send packets to the network,
+and introduce some simple models for the 
+expected capacity of a typical APRS network.
 
