@@ -27,7 +27,7 @@ As APRS has grown from an experimental network
 to one that covers much of the country,
 it has adopted and discarded multiple sets of digipeater aliases
 and sets of expectations as to each node's behavior regarding those aliases,
-without making it clear that the previous behavior has been depricated.
+without making it clear that the previous behavior has been deprecated.
 The rest of this chapter will walk through the history
 of the basic set of routing aliases,
 followed by an overview of possible digipeater behaviors.
@@ -35,14 +35,14 @@ followed by an overview of possible digipeater behaviors.
 More than anything else, this chapter is going to highlight
 how ambiguous the APRS specification is in regards to digipeater behavior.
 Most of the aliases discussed in the original APRS protocol specification
-have been subsequently depricated,
-without the APRS specification being ammended to indicate as such.
+have been subsequently deprecated,
+without the APRS specification being amended to indicate as such.
 The APRS specification also failed to have a detailed discussion
 on digipeater behavior,
 so many different interpretations and ideas have been developed, which has
 created several divergent schools of thought on what behavior is best.
 Writing a definitive analysis on digipeater behavior is a large undertaking
-that warrents further consideration beyond what is possible in this paper.
+that warrants further consideration beyond what is possible in this paper.
 
 \section{RELAY,WIDE}
 
@@ -64,7 +64,7 @@ help from a lower-level digi.
 This RELAY for low-level and both RELAY and WIDE alias for high-level digipeater concept worked well
 because the existing packet hardware at the time natively supported configuring these aliases, but
 became increasingly problematic as the APRS network grew and became higher density. Each digipeater
-could not verify that they had already retransmitted a beacon, so single packets would ``ping-pong" 
+could not verify that they had already re-transmitted a beacon, so single packets would ``ping-pong" 
 between digipeaters repeatedly until the entire path was finally consumed.
 
 To solve this, a new digipeater behavior called deduplication (dedup) was implemented.
@@ -187,7 +187,7 @@ and physically replacing the 32 pin ROM chip inside the KPC-3+
 with a \$40 replacement\footnote{Kantronics did offer free v9.1 ROM exchanges to 
 any customers who had purchased their TNCs in the past two years} 
 proved to be a sufficient barrier that many APRS digipeaters still
-suffer from this defect.\footnote{It has been jokely said that once a digipeater
+suffer from this defect.\footnote{It has been jokingly said that once a digipeater
 	goes on the air, none of its settings will be changed until either the digipeater
 or its owner dies}
 
@@ -235,7 +235,7 @@ Therefore, low-level digipeaters should only digipeat packets which
 have ``WIDE1-1" as their first routing hop, since that indicates that
 the user doesn't believe they can reach high-level digipeaters directly.
 
-High-level digipeaters form the actual blacket coverage of APRS, and
+High-level digipeaters form the actual blanket coverage of APRS, and
 should respond to any valid WIDEn-N alias which still contains unconsumed hops,
 including WIDE1-1. This is because many digipeaters will only consume the first
 unused alias in the path, so a low-power tracker that gets ``lucky" and manages to
@@ -253,7 +253,7 @@ so this section can't be considered a complete definition of a digipeater's beha
 
 As previously mentioned, the failure of the APRS specification to provide
 a comprehensive extension of digipeater behavior for APRS has caused
-impletementers to get creative with the details and extentions of
+implementers to get creative with the details and extensions of
 the basic behavior defined in the AX.25 specification.
 Some of these variations include:
 \begin{itemize}
@@ -270,7 +270,7 @@ Some of these variations include:
 		to WIDE1-1, but only digipeat packets when they appear to have not
 		been already digipeated by another digipeater.
 	\item Viscous delay digipeaters, where packets are held for a number of
-		seconds to see if they are otherwise retransmitted by other digipeaters.
+		seconds to see if they are otherwise re-transmitted by other digipeaters.
 		If an echo of a packet is heard, it gets dropped instead of digipeated.
 	\item Token bucket digipeaters, which refuse to digipeat stations which
 		exceed a specified volume of network traffic.
