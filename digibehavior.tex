@@ -13,19 +13,36 @@ the operator would need to discover new near-by digipeaters and manually constru
 routing paths using them.
 
 One of the design goals of APRS has been to support mobile nodes,
-so this requirement to pre-facto be aware of the local infrastructure is unacceptable.
-The solution was to categorize digipeaters into a small number of ``aliases" such that
-a digipeater would respond to both its specific callsign and to any of its aliases.
-A mobile station expecting to move throughout the APRS network could then construct it's
-routing paths purely out of digipeater aliases and use the network infrastructure despite
-not knowing each digipeater's callsign or location.
+so this requirement to pre-facto be aware of the
+local infrastructure is unacceptable.
+The solution was to categorize digipeaters into a small number of ``aliases"
+such that a digipeater would respond to both its specific callsign
+and to any of its aliases.
+A mobile station expecting to move throughout the APRS network
+could then construct it's routing paths purely out of digipeater aliases
+and use the network infrastructure despite not knowing
+each digipeater's callsign or location.
 
-As APRS has grown from an experimental network to one that covers much of the country,
-it has adopted and discarded multiple sets of digipeater aliases and sets of expectations
-as to each node's behavior regarding those aliases, without making it clear that the
-previous behavior has been depricated.
-The rest of this chapter will walk through the history of the basic set of routing aliases,
-followed by a detailed examination of each digipeater's expected behavior. 
+As APRS has grown from an experimental network
+to one that covers much of the country,
+it has adopted and discarded multiple sets of digipeater aliases
+and sets of expectations as to each node's behavior regarding those aliases,
+without making it clear that the previous behavior has been depricated.
+The rest of this chapter will walk through the history
+of the basic set of routing aliases,
+followed by an overview of possible digipeater behaviors.
+
+More than anything else, this chapter is going to highlight
+how ambiguous the APRS specification is in regards to digipeater behavior.
+Most of the aliases discussed in the original APRS protocol specification
+have been subsequently depricated,
+without the APRS specification being ammended to indicate as such.
+The APRS specification also failed to have a detailed discussion
+on digipeater behavior,
+so many different interpretations and ideas have been developed, which has
+created several divergent schools of thought on what behavior is best.
+Writing a definitive analysis on digipeater behavior is a large undertaking
+that warrents further consideration beyond what is possible in this paper.
 
 \section{RELAY,WIDE}
 
@@ -184,5 +201,86 @@ This means that a path such as ``RELAY,WIDE2-2" should now be rewritten as
 To digipeaters aware of this new interpretation, ``WIDE1-1,WIDE2-2" signifies 
 requesting one low-level and two high-level hops.
 To older digipeaters like the KPC-3+, it appears to be an odd way to request
-three WIDE hops compared to ``WIDE3-3," yet the deduplication is still done correctly.
+three WIDE hops compared to ``WIDE3-3," 
+yet the deduplication is still done correctly.
+
+The issue with this replacement of RELAY with WIDE1-1 is that there is now
+no way to correctly request a single high-level hop.
+The solution was to allow trackers to use the alias of WIDE2-1 for single
+high level hops.
+This works, but now breaks the original meaning of the first number,
+which stood for the originally requested number of hops.
+When a digipeater receives a packet with a ``WIDE2-1" path, 
+there is no way to definitively
+tell if that alias represents a two hop request that has gone through one hop,
+or a single high-level hop request that hasn't been processed yet.
+
+\section{Minimum WIDEn-N Behavior}
+
+APRS digipeaters are divided into two classes; high-level digipeaters and
+low-level digipeaters, which dictates variations in their behavior.
+High-level digipeaters form the major backbone of the APRS digipeater network
+and are generally installed on the tops of mountains,
+tall office buildings, and large towers.
+Low-level digipeaters usually have their antennas less than 50 feet above ground
+level, and cover a small subset of the wider coverage provided by the
+nearest high-level digipeater.
+
+Since each low-level digipeater's coverage area is a subset of the
+nearest high-level digipeater's coverage, a low-level digi isn't needed
+to repeat packets coming in from the high-level digipeater.
+Low-level digipeaters are designed to solely act as ``boosters" to
+help local low-power trackers be able to reach the nearest high-level digi.
+Therefore, low-level digipeaters should only digipeat packets which
+have ``WIDE1-1" as their first routing hop, since that indicates that
+the user doesn't believe they can reach high-level digipeaters directly.
+
+High-level digipeaters form the actual blacket coverage of APRS, and
+should respond to any valid WIDEn-N alias which still contains unconsumed hops,
+including WIDE1-1. This is because many digipeaters will only consume the first
+unused alias in the path, so a low-power tracker that gets ``lucky" and manages to
+reach a high-level digipeater while using a path such as ``WIDE1-1,WIDE2-2"
+depends on high-level digipeaters responding to WIDE1-1.
+
+Digipeater behavior includes several more caveats which don't involve the APRS
+WIDEn-N routing alias,\footnote{Examples include the expectation of digipeaters
+	to substitute their callsigns into routing paths as they consume aliases,
+	and that they still must respond to their callsign as a routing hop in 
+addition to the WIDEn-N alias.} 
+so this section can't be considered a complete definition of a digipeater's behavior.
+
+\section{Variations on Digipeater Behavior}
+
+As previously mentioned, the failure of the APRS specification to provide
+a comprehensive extension of digipeater behavior for APRS has caused
+impletementers to get creative with the details and extentions of
+the basic behavior defined in the AX.25 specification.
+Some of these variations include:
+\begin{itemize}
+	\item Should digipeaters replace used aliases with their callsign, and
+		how should the last hop of multi-hop aliases be handled?\footnote{i.e.
+		should ``WIDE3-1" become ``DIGIA*" or ``DIGIA*,WIDE3*"?}
+	\item Preemptive digipeating, where digipeaters don't only consider the
+		first unused alias, but continues to search the entire path
+		until a match is found, and marks every skipped alias as used as well.
+	\item Long path traps, where abusive WIDE paths such as WIDE7-7 are trapped
+		and all or many requested hops are consumed by the first digipeater
+		to prevent flooding extremely large areas.
+	\item Direct-only digipeaters, where low-level digipeaters don't only respond
+		to WIDE1-1, but only digipeat packets when they appear to have not
+		been already digipeated by another digipeater.
+	\item Viscous delay digipeaters, where packets are held for a number of
+		seconds to see if they are otherwise retransmitted by other digipeaters.
+		If an echo of a packet is heard, it gets dropped instead of digipeated.
+	\item Token bucket digipeaters, which refuse to digipeat stations which
+		exceed a specified volume of network traffic.
+\end{itemize}
+
+While the implications of any single item on this list are seemingly small,
+the countless permutations and inconsistencies seen deployed in the
+world-wide APRS network causes the network to behave unpredictably and
+give disappointing levels of service to its end-users.
+Further work is needed to specify how much of a digipeater's behavior is
+required versus optional, and how much latitude should be given to individual
+digipeater operators for any of the optional features implemented.
 
