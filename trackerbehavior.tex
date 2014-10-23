@@ -223,7 +223,7 @@ for any of these algorithms are not at all straight forward.
 		how tight of a turn they need to perform to trigger a corner peg.
 		The original documentation notes this value as unitless,
 		which isn't entirely invalid since degree miles per hour isn't 
-		a particularly helpful unit.
+		a particularly helpful dimension.
 	\item turn\_beacon\_interval = 15 seconds. The maximum beacon rate allowed 
 		when a tracker is changing heading often.
 	
@@ -291,7 +291,7 @@ ELSE {
 IF (secs_since_beacon> beacon_rate)
 	// ... send beacon
 \end{lstlisting}
-\caption{HamHUD SmartBeaconing Algorithm}
+\caption{HamHUD SmartBeaconing Algorithm Documentation}
 \label{fig:hamhudsmartbeacon}
 \end{figure}
 
@@ -332,13 +332,177 @@ IF (secs_since_beacon> beacon_rate)
 \end{figure}
 
 
-%\section{Path Recommendations}
+\section{Path Recommendations}
 
-%\begin{itemize}
-%\item Fixed site: WIDE2-1 or literal Digis
-%\item Mobile: WIDE1-1,WIDE2-1
-%\item Airbore: No path
-%\item Weather Stations: WIDE2-2?
-%\item Proportional pathing
-%\end{itemize}
+In addition to the task of deciding when to beacon,
+each user needs to make a judgement as to how far they want to flood their
+traffic throughout the APRS network.
+This is another subject that evokes controversy due to the problem that
+recommendations that
+are valid in \emph{most} of the network will often be invalid for small parts
+of it.
+This causes every discussion on the subject to be muddied with arguments
+about small edge-cases and the specifications make no concrete recommendations
+on the subject all together.
 
+This means that the following guidance is guaranteed to be ``flawed" when
+applied somewhere in the APRS network, but the hope is that this will
+be generally correct when considering most of the network.
+The local administrators in regions which require different path selections 
+than the following should be expected to either 
+maintain and publish a set of their own
+recommendations or re-design their network to support the standard suggestions.
+
+\subsection{Vehicles and Mobile Stations}
+
+In the most general case, vehicles should use a path of ``WIDE1-1,WIDE2-1,"
+which requests two total hops, including allowing low-level digis to assist
+them reaching the high-level digipeater network on their first hop.
+Vehicles which stay in highly populated areas should consider using the
+shorter ``WIDE1-1" path, while vehicles which do the opposite and spend
+a significant amount
+of their time in unusually sparse areas 
+may use ``WIDE1-1,WIDE2-2." \cite{infoaprspath}
+
+\subsection{Fixed Stations}
+
+Many APRS stations aren't expected to ever move, such as home stations acting
+as Internet gateways, digipeaters that are part of the infrastructure, or
+remote weather stations.
+Since these stations should have the transmitter power and high-quality antennas
+needed to reach high-level digipeaters,
+they should not begin their path with WIDE1-1 but select between the following
+options depending on how many hops are needed:
+\begin{itemize}
+	\item WIDE2-1 - A single hop for unimportant traffic or stations near a
+		particularly large coverage digipeater.
+	\item WIDE2-2 - The most standard path that stations should only
+		deviate from after careful consideration.
+	\item WIDE3-3 - Should only be used in mountainous or spare areas for
+		traffic important to a large number of stations. Almost no 
+		stations should ever use this path.
+\end{itemize}
+
+Fixed stations also enjoy the advantage that they do not need to handle a
+constantly changing APRS infrastructure as vehicles do.
+Instead of using the APRS WIDE aliases, fixed stations should seriously
+consider using literal paths consisting of specific digipeater callsigns.
+For example, a fixed station desiring a single hop through the near-by
+HIGHA digipeater should beacon with a path of ``HIGHA" instead of ``WIDE2-1."
+This causes only the HIGHA digipeater to repeat the packet and not involve
+any further away or lower-level digipeaters which happen to also decode the
+initial transmission. 
+Literal paths requesting the help of specific digipeaters is rarely
+seen in APRS traffic, and should be better encouraged.
+
+Fixed stations should also consider using ``proportional pathing,"
+which warrants its own section below.
+
+\subsection{Airborn Stations}
+
+APRS is often used as a safety or recovery system for airplanes or weather balloons,
+and these stations \emph{MUST NOT} use any digipeaters in their path while
+significantly above ground-level. \cite{nopathhigh}
+It is critical that airborn stations use an empty path because their
+altitude ensures that they already cover more area than any of the digipeaters
+they would enlist to repeat their traffic.
+It is common for balloons to be launched with paths such as ``WIDE1-1,WIDE2-1"
+which cause havoc as packets are received by every digipeater within hundreds of
+miles and needlessly repeated to other stations which have already received the
+original transmission.
+
+It may be desireable for airborn trackers to support the feature of switching from
+an empty path to something else when on the ground.
+A good example would be a weather balloon payload switching from an empty path
+to a ``WIDE1-1" path when the balloon bursts to aid in recovery of the
+payload once it reaches the ground.
+
+\subsection{Proportional Pathing}
+
+Proportional pathing is the tracker behavior where every beacon does not
+use the same routing path, which is the norm for APRS trackers.
+It is not a part of the APRS spec, but has been documented as an
+errata on the aprs.org website. \cite{bobproppath}
+Since information passed through the APRS network is usually more important
+for stations near the originating station than those further away,
+it follows that it would be preferable for near-by stations to hear these beacons
+more often.
+This can be accomplished by modulating the number of requested hops per beacon,
+such that not every packet takes multiple hops, but some do.
+
+The most common example of where proportional pathing should be applied is
+low level digipeaters.
+A typical low-level digipeater beacons its location every ten minutes with
+a path of ``WIDE2-1."
+This means that every station within range of this digipeater, 
+and every station within range of adjacent high-level digipeaters,
+see the same location beacon for the unmoving digipeater every ten minutes.
+It is useful to be able to see where low-level digipeaters are,
+and the beacons may be required every ten minutes to meet FCC part 97 identification
+requirments,
+but it's unlikely that every station needs to be reassured that the digipeater
+is still online every ten minutes.
+
+Proportional pathing suggests that instead of transmitting every packet with
+a path of WIDE2-1, a low-level digipeater could produce less traffic on the
+APRS network by alternating between paths as follows:
+\begin{itemize}
+	\item 0:00 ``~"
+	\item 0:10 ``~"
+	\item 0:20 ``WIDE2-1"
+	\item 0:30 ``~"
+	\item 0:40 ``~"
+	\item 0:50 ``WIDE2-2"
+\end{itemize}
+
+At the top of the hour, 10 after, 30 after, and 40 after, this low-level digipeater
+beacons with an empty path, meaning that no other digipeaters will repeat the
+packet.
+Once an hour the beacon is sent requesting a single hop, and a second time
+in the hour the beacon is sent with an even longer two-hop path.
+This enables the digipeater to beacon every ten minutes locally,
+but stations further away only have to handle its traffic once or twice an hour
+while still being able to see it periodically.
+The digipeater is therefore still highly visible locally, but generates
+much less traffic on the high-level backbone digipeaters for its
+longer-range advertisements.\footnote{It's important
+	to note that although the example shows every beacon at the beginning of
+	every ten minutes, an actual deployment should select a random off-set
+or dither their beacon interval to prevent local traffic spikes 
+from happening once every ten minutes when every digi simultaneously beacons.}
+
+This example considered the most common form of proportional pathing,
+where the tracker maintains a finite state machine to switch between
+a limited and predefined list of paths,
+but a possible area for future work would be developing more sophisticated
+proportional pathing algorithms.
+Much like the SmartBeaconing algorithm considered earlier,
+heuristics could be developed to categorize how important the next beacon
+will be, based on variables such as the local traffic level,
+how many new stations have been recently heard, or time of day,
+and used to adaptively change the routing path used.
+
+\section{Conclusion}
+
+This chapter has presented a list of the most popular algorithms
+used to determine when a tracker should beacon, and provided some
+general guidance on what routing paths should be used by different types
+of trackers.
+The source-routed nature of APRS is often considered a double-edge sword,
+since any operator may join any APRS network and tailor how the network
+handles the local station's traffic to meet their own needs.
+The downside to source-routing is that malicious or ignorant stations
+are empowered to cause a tremendous amount of harm to the network's performance
+by beaconing too often or with too long of a path,
+so careful consideration and user education is particularly important for
+a successful APRS network.
+
+The guidance given has been as general as possible,
+without documenting the numerous edge cases and exceptions in individual areas.
+This is a common flaw with APRS documentation,
+where writers refuse to give any concrete advise since it is inevitably wrong
+somewhere in the world-wide APRS network.
+Stations planning to operate in unusually high or low density areas should
+carefully consider their beaconing behavior and consult local APRS interest
+groups.\footnote{\url{http://info.aprs.net} is a particularly useful website
+documenting local exceptions to these general rules.}
