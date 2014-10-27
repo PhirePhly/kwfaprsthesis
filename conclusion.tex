@@ -1,0 +1,60 @@
+\chapter{Conclusion}
+
+This paper has considered several of the different aspects of the APRS network,
+ranging from the low-level modem and channel access methods up to
+how nodes should make beaconing and routing decisions.
+During this survey, particular attention has been paid to pointing out
+deficiencies in the existing documentation while forming 
+an unusually large collection of information on the topic of APRS.
+Some of these deficiencies have been followed by improvements
+and suggestions, while many of the larger shortfalls have
+been merely identified for future work.
+Due to many limited resources, this paper cannot stand as the definitive
+reexamination of the topic of APRS,
+but should be seen as a fastidious call to action to step back and
+try to re-examine the APRS network in the modern context.
+
+Some of the major contributions of this paper include:
+\begin{itemize}
+	\item Explicitly reclassifying HDLC framing as part of the modem
+		and not the layer 2 AX.25 stack, particularly with
+		regards to the KISS modem interface protocol.
+	\item Novel documentation of the CCITT CRC checksum as shown in
+		figure \ref{fig:crcccittcode} and Appendix \ref{sec:crcref}.
+	\item Summarizing the AX.25 format as it is used for APRS.
+	\item Explicitly deprecating the original meaning of the first number
+		in the WIDEn-N routing alias.
+	\item Presenting a comprehensive list of beacon interval
+		algorithms, including a major reformatting of the
+		existing SmartBeaconing documentation as presented
+		in figure \ref{fig:kwfsmartbeacon}.
+	\item Providing guidance on what the default paths should be for
+		various categories of APRS stations.
+	\item Apply a simple Poisson traffic model to the APRS network
+		as a sanity check that the range goals of APRS are viable.
+\end{itemize}
+
+While these will likely prove useful to any readers looking to learn about
+the internal mechanics of APRS in the interest of building their own nodes
+for the network, it is the author's hope that the lasting value of this paper
+eventually proves to be its call to action for others to critically 
+reexamine the APRS ecosystem.
+APRS has received little of the analytic mind-share that other large
+computer networks have received,
+and has been suffering from progressively larger growing-pains as many
+of the original design decisions start to break down as APRS grows beyond tens of
+thousands of active stations.
+
+A re-enumeration of all the possible avenues for further work
+derived from this paper would invariably be incomplete.
+The interested reader need not look too deeply to find possible subjects
+for further research, as evidenced by the author's painful overuse of the
+phrase ``beyond the scope of this work."
+
+While currently used primarily as a vehicle tracking system,
+the APRS network offers a tantalizing amount of flexibility to lend itself
+useful to countless other applications.
+Should enough effort be expended to tame the ambiguities left in the
+specification of APRS,
+it would be positioned to be a tremendously useful asset to the amateur
+radio community.
