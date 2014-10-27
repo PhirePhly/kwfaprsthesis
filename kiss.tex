@@ -4,7 +4,7 @@ KISS (``Keep It Simple, Stupid") is a protocol originally presented by
 Mike Chepponis, K3MC and Phil Karn, KA9Q at the 6th ARRL Computer Networking
 Conference in Redondo Beach, CA \cite{KISSspec}.
 KISS was designed as an extension to the Serial Line 
-Internet Protocol (SLIP) allowing for in-band signalling from 
+Internet Protocol (SLIP) allowing for in-band signaling from 
 the host to the modem to enable setting modem 
 configuration parameters such as the preamble length and CSMA parameters.
 
@@ -63,7 +63,7 @@ standards-compliant way.
 While not fatal, there are a small number of deficiencies with the KISS
 protocol that keep it from being an ideal link protocol between hosts and modems.
 
-KISS makes no provisions for checksums or error detection of frames transfered
+KISS makes no provisions for checksums or error detection of frames transferred
 between host and modem. This is not a problem for the typical system
 using a short RS-232 link where bit errors are unexpected.
 Unfortunately, other applications of KISS have required checksums, which
@@ -79,7 +79,7 @@ packet networks but are also used in some insular APRS networks
 (see section~\ref{subsec:timeslot})
 
 There are no supported command codes from modem to host other than the data frame
-command, which prevents hosts from being able to interogate the device 
+command, which prevents hosts from being able to interrogate the device 
 about out-of-band information such as the modem's model and feature set,
 the current values of channel access parameters, or any measure of the 
 channel occupancy other than successfully received complete packets.

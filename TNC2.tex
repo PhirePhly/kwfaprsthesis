@@ -13,19 +13,19 @@ every packet it received via RF to the local console such that
 users can see and monitor the other AX.25 traffic on the channel.
 While the TNC2 monitor mode does not capture the entire state of 
 an AX.25 header, APRS uses so little of the header (as discussed in
-the AX.25 chapter) that the TNC2 markup proved sufficent as the 
+the AX.25 chapter) that the TNC2 markup proved sufficient as the 
 format used to pass APRS packets throughout the APRS-Internet System
 backbone created to aggregate APRS traffic online.
 
 Each packet must consist of a source address, a destination address,
 an optional list of digipeaters, and the packet payload.
-The source and destination calls are seperated by a right chevron,
-followed by a comma seperated list of digital repeaters, and finally
+The source and destination calls are separated by a right chevron,
+followed by a comma separated list of digital repeaters, and finally
 terminated by a colon before the higher layer payload.
 
 The digipeaters are listed in sequential order, and an asterisk
 is appended to at least the last digipeater in the 
-routing path that has already processed and retransmitted the packet.
+routing path that has already processed and re-transmitted the packet.
 Some implementations of the TNC2 monitor mode append the ``consumed"
 asterisk to every used digipeater in addition to the last one,
 which semantically makes no difference due to digipeaters

@@ -4,7 +4,7 @@
 One of the largest limitations of the APRS network is the fact that it primarily operates
 on a single regional 1200 bits per second data channel. 
 Individual nodes share the 1200bps channel using 
-CSMA as discused in section~\ref{sec:bell202csma}, but the relationship between 
+CSMA as discussed in section~\ref{sec:bell202csma}, but the relationship between 
 these channel access methods and how often a station should beacon isn't straight-forward.
 
 The APRS specification fails to give concrete guidance on what beacon interval should
@@ -15,7 +15,7 @@ For fixed nodes such as weather stations and network infrastructure,
 these intervals are appropriate, but mobile users find this beacon interval unsatisfying
 and not useful.
 There is a common desire to beacon more often than every 10 minutes,
-as shown by the wide deploymeny of SmartBeaconing,
+as shown by the wide deployment of SmartBeaconing,
 but how often is allowable while staying within the limitations of the network?
 
 This chapter will give an introduction to the original ALOHAnet research that networks like
@@ -31,7 +31,7 @@ This value was apparently selected arbitrarily based on the feeling that
 it is unlikely that a station would need to interact with anyone beyond their 60
 closest peers, but will nevertheless be used for the analysis in this chapter.
 This does complicate analysis of the APRS network since each station's set of
-their 60 nearest peers, which is refered to as their ``Aloha Circle,"
+their 60 nearest peers, which is referred to as their ``Aloha Circle,"
 is a different subset of all the stations in the network;
 every station has a different point of view as to who is in their aloha circle and who
 is not.
@@ -46,7 +46,7 @@ developed for the ALOHA System at the University of Hawaii\cite{packetthroughput
 The ALOHAnet was a 9600bps UHF packet radio system that was the first application of 
 wireless computer networking.
 This system developed several of the shared channel access methods 
-that would subsequenty be used in other protocols such as Ethernet, GSM, and APRS.
+that would subsequently be used in other protocols such as Ethernet, GSM, and APRS.
 
 \section{Poisson Channel}
 
@@ -61,7 +61,7 @@ calculated as
 	G = \lambda \tau
 \end{equation}
 This normalized value is measured in units of Erlangs,
-which idicate what fraction of a channel would be needed for all
+which indicate what fraction of a channel would be needed for all
 of the traffic entering the network.
 For example, a value $G=1.0$ would indicate that
 a single station would need to transmit packets continuously, where $G=0.5$ indicates 
@@ -134,7 +134,7 @@ Any station that beaconed that fast on an actual APRS network could very quickly
 be identified as abusive to the rest of the network, so further work is needed
 before an analytic interval suggestion can be made.
 What this calculation does demonstrate is that the general concept of 60 stations
-sharing a single ALOHA channel in the way APRS intends is within the realhm of
+sharing a single ALOHA channel in the way APRS intends is within the realm of
 possibilities. 
 Had this value come out an order of magnitude larger, the claim
 that APRS could allow a user to discover 60 other stations would be much more suspect.
@@ -163,14 +163,14 @@ Some of the ignored issues include:
 		but many APRS stations use CSMA to avoid transmitting on already busy channels.
 		This reduces the window for destructive collisions and thus reduces the ratio
 		between the channel traffic G and the usable throughput S.
-	\item Sources of entropy in the network -- Starting with a Poisson stocastic model
+	\item Sources of entropy in the network -- Starting with a Poisson stochastic model
 		implies a strong assumption that every packet starts at a random time independent
 		of every other packet. Many APRS stations beacon on a fixed interval,
 		such as 600 seconds, which makes that station's traffic very self-similar.
 		Digipeaters also strongly break this assumption by their action of immediately
 		repeating packets after they're originally transmitted.
 		These digipeater echos aren't random at all.
-		Papers have been written on the misuse of poisson traffic models with regards
+		Papers have been written on the misuse of Poisson traffic models with regards
 		to TCP/IP networks \cite{failureofpoisson}, and those arguments often apply
 		equally well to the APRS network.
 	\item The heterogeneous nature of APRS equipment -- Any closed-form analysis
@@ -196,9 +196,9 @@ The community has been extremely reluctant to outright classify APRS hardware
 as misbehaving in the past,
 due to the embedded nature of APRS nodes that usually precludes any major
 modifications in behavior of existing nodes.
-Classitying a node as misbehaving often meant that the operator would need to
+Classifying a node as misbehaving often meant that the operator would need to
 spend a significant amount of time and money outright replacing the deficient hardware.
-As more APRS nodes move to open-source and/or reprogramable implementations,
+As more APRS nodes move to open-source and/or reprogrammable implementations,
 it's conceivable that updates to APRS behavior as resulting 
 from future research may become merely difficult,
 instead of utterly impossible.\footnote{For example, the open source aprx package is

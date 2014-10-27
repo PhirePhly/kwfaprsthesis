@@ -27,7 +27,7 @@ be used when configuring various types of network nodes.
 For each APRS node with information available for the network,
 a local decision needs to be made as to when that information will best 
 serve the local network and should be transmitted. This is rarely a trivial 
-decision, and one that could warrent much more creative and application or data
+decision, and one that could warrant much more creative and application or data
 specific solutions than the ones presented here, which should be considered 
 the typical minimum of most popular APRS trackers. The only datum considered 
 in this paper is that of a mobile node's position, but these algorithms would
@@ -37,9 +37,9 @@ likely extend to most other user applications of APRS.
 
 The simplest beaconing algorithm consists of waiting a single fixed interval
 between beacons, and only requires a single parameter that is the beacon interval.
-When a tracker is turned on, it aquires a GPS lock and immediately sends out a 
+When a tracker is turned on, it acquires a GPS lock and immediately sends out a 
 beacon and starts a timer. Once that timer exceeds the beacon interval value, a 
-new position is aquired from the GPS receiver and the new location is beaconed.
+new position is acquired from the GPS receiver and the new location is beaconed.
 While simple, this algorithm does suffer from a number of inadequacies:
 \begin{itemize}
 \item The decision to beacon is made solely based on how long it has been
@@ -63,16 +63,16 @@ algorithm which each fix various deficiencies at the expense of simplicity.
 Arguably a more restrictive form of fixed interval beaconing, time slotting is 
 based on the idea of preventing channel collisions by allocating each tracker
 a fixed time slot in each interval for when they are allowed to transmit.
-An infeasible solution for the national APRS network due to its scale and lack
+An unfeasible solution for the national APRS network due to its scale and lack
 of coordination, time slotting is often applied where unusually high levels of
 coordination do exist, such as special events and insular networks.
 
 Time slotting introduces a new parameter called the slot time, and depends on every
-tracker using it having syncronized real time clocks, which is reasonable since most
+tracker using it having synchronized real time clocks, which is reasonable since most
 GPS receivers provide real time to within typically 200ms of UTC 
 as part of their position reports
 \footnote{The 200ms uncertainty is a typical value due to the delivery of time over
-an asyncronous 4800 baud serial port. Internally, GPS receivers must maintain 
+an asynchronous 4800 baud serial port. Internally, GPS receivers must maintain 
 their real time clocks to several orders of magnitude higher precision than this
 to be even remotely useful, but this precision isn't needed for APRS time slotting}.
 
@@ -98,10 +98,10 @@ a time slot of 12 would beacon at the following times:
 
 This deterministic beaconing algorithm allows carefully designed networks to 
 over-subscribe network throughput well beyond the levels expected from 
-the national APRS channel with its stocastic access methods. 
-On an insular network seperate from the national
-network, it would be possible to set an aggresively short beacon interval and 
-carefully space trackers such that no two beacons colide with each other. 
+the national APRS channel with its stochastic access methods. 
+On an insular network separate from the national
+network, it would be possible to set an aggressively short beacon interval and 
+carefully space trackers such that no two beacons collide with each other. 
 This would make it possible to accomplish service levels such as
 every-minute position updates from several dozen tracked vehicles, 
 at the expense that there is no allowance for any additional traffic 
@@ -162,7 +162,7 @@ of the highly quantized beacon interval.
 \label{fig:ditheringalg}
 \end{figure}
 
-Developing analytical justifications for selecting specific distributions
+Developing analytic justifications for selecting specific distributions
 are beyond the scope of this work, but it's theorized that introducing
 any kind of entropy with approximately 1\% variance could improve network
 traffic distribution.
@@ -182,7 +182,7 @@ based on how ``interesting" the tracker's new position is.
 Vehicles moving in straight lines will tend to beacon at very long intervals,
 but will beacon more often when making turns or traveling faster.
 The algorithm is owned by HamHUD Nichetronix, LLC, and licensed freely
-for non-commerical amateur radio applications.
+for non-commercial amateur radio applications.
 
 This algorithm is particularly useful for APRS due to the fact that APRS
 position reports support dead-reckoning, where they include a direction and 
@@ -230,8 +230,8 @@ for any of these algorithms are not at all straight forward.
 \end{itemize}
 
 The original HamHUD algorithm is documented online as a snippet of C-like 
-pseudocode as shown in figure~\ref{fig:hamhudsmartbeacon}.
-In addition to the seven algorithm parameters, the pseudocode
+pseudo-code as shown in figure~\ref{fig:hamhudsmartbeacon}.
+In addition to the seven algorithm parameters, the pseudo-code
 requires the current speed and heading of the tracker, which are both
 typically available from the \$GPRMC NMEA sentence \cite{nmearmc} provided by the 
 tracker's GPS receiver, and the number of seconds since the last transmitted beacon.
@@ -263,7 +263,7 @@ have possibly harmed deployment of the SmartBeaconing algorithm on other tracker
 \end{itemize}
 
 Due to these issues, it seemed appropriate to rewrite the algorithm 
-to correct these issues and to re-typeset the pseudocode in a more
+to correct these issues and to re-typeset the pseudo-code in a more
 contemporary style, which can be seen in figure~\ref{fig:kwfsmartbeacon}.
 
 \begin{figure}[p]
@@ -335,7 +335,7 @@ IF (secs_since_beacon> beacon_rate)
 \section{Path Recommendations}
 
 In addition to the task of deciding when to beacon,
-each user needs to make a judgement as to how far they want to flood their
+each user needs to make a judgment as to how far they want to flood their
 traffic throughout the APRS network.
 This is another subject that evokes controversy due to the problem that
 recommendations that
@@ -398,12 +398,12 @@ seen in APRS traffic, and should be better encouraged.
 Fixed stations should also consider using ``proportional pathing,"
 which warrants its own section below.
 
-\subsection{Airborn Stations}
+\subsection{Airborne Stations}
 
 APRS is often used as a safety or recovery system for airplanes or weather balloons,
 and these stations \emph{MUST NOT} use any digipeaters in their path while
 significantly above ground-level. \cite{nopathhigh}
-It is critical that airborn stations use an empty path because their
+It is critical that airborne stations use an empty path because their
 altitude ensures that they already cover more area than any of the digipeaters
 they would enlist to repeat their traffic.
 It is common for balloons to be launched with paths such as ``WIDE1-1,WIDE2-1"
@@ -411,7 +411,7 @@ which cause havoc as packets are received by every digipeater within hundreds of
 miles and needlessly repeated to other stations which have already received the
 original transmission.
 
-It may be desireable for airborn trackers to support the feature of switching from
+It may be desirable for airborne trackers to support the feature of switching from
 an empty path to something else when on the ground.
 A good example would be a weather balloon payload switching from an empty path
 to a ``WIDE1-1" path when the balloon bursts to aid in recovery of the
@@ -439,7 +439,7 @@ and every station within range of adjacent high-level digipeaters,
 see the same location beacon for the unmoving digipeater every ten minutes.
 It is useful to be able to see where low-level digipeaters are,
 and the beacons may be required every ten minutes to meet FCC part 97 identification
-requirments,
+requirements,
 but it's unlikely that every station needs to be reassured that the digipeater
 is still online every ten minutes.
 
