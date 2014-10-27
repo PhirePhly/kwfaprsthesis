@@ -128,6 +128,17 @@ The less satisfying result is the fact that only 10 of these packets every minut
 successful received, which indicates that
 two thirds of the transmitted power is wasted.
 
+The next section will go into how this Poisson model is deficient to the
+point that this 2 minute 13 seconds value is nearly meaningless.
+Any station that beaconed that fast on an actual APRS network could very quickly
+be identified as abusive to the rest of the network, so further work is needed
+before an analytic interval suggestion can be made.
+What this calculation does demonstrate is that the general concept of 60 stations
+sharing a single ALOHA channel in the way APRS intends is within the realhm of
+possibilities. 
+Had this value come out an order of magnitude larger, the claim
+that APRS could allow a user to discover 60 other stations would be much more suspect.
+
 \section{Deficiencies of the Poisson Model}
 
 There were several assumptions made to simplify the just-presented model 
