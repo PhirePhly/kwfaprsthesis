@@ -1,13 +1,5 @@
 \chapter{KISS}
 
-KISS (``Keep It Simple, Stupid") is a protocol originally presented by 
-Mike Chepponis, K3MC and Phil Karn, KA9Q at the 6th ARRL Computer Networking
-Conference in Redondo Beach, CA \cite{KISSspec}.
-KISS was designed as an extension to the Serial Line 
-Internet Protocol (SLIP) allowing for in-band signaling from 
-the host to the modem to enable setting modem 
-configuration parameters such as the preamble length and CSMA parameters.
-
 During the early 1980's when amateur Terminal Node Controllers were developed,
 the expectation was that the TNC would be handling 
 the entire packet protocol stack up to the final presentation to the user, which
@@ -15,73 +7,119 @@ could be done using a dumb terminal such as a VT100 or line printer
 and a keyboard. 
 As personal computers became affordable in the late 1980's, the expectation that
 the entire application stack would run on the embedded TNC became severely limiting
-and KISS emerged as the solution to expose the modems inside TNCs via 
+and KISS (``Keep It Simple, Stupid") emerged as the solution to 
+expose the modem inside TNCs via 
 an eight bit clean interface and bypass the TNC's internal network stack.
 
+KISS was originally presented by 
+Mike Chepponis, K3MC and Phil Karn, KA9Q at the 6th ARRL Computer Networking
+Conference in Redondo Beach, CA \cite{KISSspec}.
+KISS was designed as an extension to the Serial Line 
+Internet Protocol (SLIP) allowing for in-band signaling from 
+the host to the TNC to enable setting modem 
+configuration parameters such as the preamble length and CSMA parameters.
+
 This meant that the existing TNCs with their radio interfaces could
-be upgraded with new ROMs that supported KISS and any new network behavior
-or protocol could be instead implemented on the host PC.
+be upgraded once with new ROMs that supported KISS and any new network behavior
+or protocol could be instead implemented on a seperate host PC.
 This was particularly valuable since personal PCs were much
 more productive development environments than the 256kb EPROMs and 8 bit
 Z80 microprocessors of the popular Tucson Amateur Packet Radio TNC 2 product
 and it's several clones \cite{TNC2manual}.
 
-\section{KISS Parameters}
-\label{sec:kissparm}
+\section{Isolating Modulation from Network}
 
-TODO: Document DWait, PPers, slottime, TXDelay
+The advantage of KISS is that it has become the standard packet interchange protocol
+between TNC modems and host network controllers,
+enabling each side to experiment with new protocols.
+This means that as the APRS protocol has evolved, stations that used the
+KISS protocol are able to continue using the same ROM-based modems and only
+need to upgrade the software running on their host system.
+This abstraction holds up even further in that it allows operators to
+use different data link protocols than AX.25,
+yet there have been few examples of this since the collapse of the IPv4 amateur
+radio networks with the wide-spread deployment of the Internet.
 
-\section{Advantages of KISS}
+As discussed in the prior chapter,
+as Bell 202 and HDLC begin to show their age, the field is ripe for a new
+modulation to replace them on VHF/UHF packet networks.
+Should a researcher wish to deploy a new modulation to use under APRS,
+all that needs to be done is build new KISS modems, which will seamlessly
+interface with most existing APRS software.
+Replacing Amateur Bell 202 modems has always been a popular subject of
+discussion on the APRS mailing lists, and is an area ripe for future
+quantitative study.
 
-While originally designed as a stop-gap solution, KISS has continued to be 
-the most popular modem to host communication protocol used in amateur packet radio.
-This is arguably due to its simplicity, flexibility,
-and the foresight on the designer's part
-to including means for device-specific extensions to the protocol.
+\section{Shortcomings of KISS}
 
-The simplicity of KISS makes it easy to implement on severely resource-constrained
-microcontrollers. The designers did an admirable job of keeping the scope of the KISS
-specification small such that it lends itself well as the binary transport
-layer between two local nodes while being flexible enough to be useful for
-more sophisticated systems.
+While originally presented as an interim solution until a better protocol was
+developed, KISS has enjoyed a lasting popularity among its users.
+One concern about KISS that has spawned several derivative protocols is the
+lack of a checksum used in each KISS frame.
+Should any bit errors happen between the host system and the modem,
+they may go undetected and cause corruption in the transported payload
+as it continues through the network.
+One of the most popular of these derivatives of KISS is SMACK (Stuttgart Modified
+Amateurradio-CRC-KISS), which is a backwards compatible extension to KISS
+which includes a frame checksum to protect against frame corruption \cite{smack}.
 
-Every KISS command is prefixed by a four bit port address and four bit 
-command code. The four bit address means that a single serial port can 
-support multiplexing up to 16 radio modems, though implementations with more
-than one or two ports are unusual. The command codes indicate the contents of the 
-following KISS frame, be it a data frame to be transmitted, a configuration
-parameter, or a hardware specific command.
+Traditionally, KISS links between the host PC and KISS modems have been deployed
+over relatively short RS-232 serial links (three to six feet),
+though an increasing number of modems are moving to a pure USB implementation.
+What the author has been unable to find is any evidence that when correctly
+deployed that these types of short serial links stand any risk of corruption
+which could be avoided by using the SMACK extension.
+Further study is needed to examine typical APRS KISS deployments to justify
+the additional effort required to implement and deploy SMACK above KISS to
+protect against any possible corruption risks.
 
-The hardware specific ``SetHardware" command code is particularly valuable
-since it enables future developers of hardware using the KISS protocol
-that happen to need the ability to send additional configuration parameters
-to the modem beyond the four that are documented are able to do so in a
-standards-compliant way.
+A second shortcoming of KISS which has not evoked anywhere near the
+level of discussion that the corruption issue has is KISS' lack of any way
+for modems to pass out-of-band (OOB) information back to the host PC.
+KISS defines numbered command codes for the host to pass information to the
+modem, including channel access settings and hardware specific settings
+beyond the type `0' data frame that should be transmitted on the channel.
+In the opposite direction, from modem to host, the KISS specification explicitly
+limits frame types to only data frames.
+This disallows hosts from being able to interogate modems as to their
+current configuation settings or any information about the RF channel
+beyond packets as they are received.
 
-\section{Disadvantages of KISS}
+The author suggests that a revision to the KISS specification be considered
+that would allow modems to pass non-zero payloads back to the host PC.
+Legacy applications would need to properly discard these non-zero frames
+as OOB data that they are not interested in,
+while enabling new applications such as interactive configuration programs
+and give more meaningful metrics as to current channel utilization.
+\begin{itemize}
+	\item An interactive configation program would allow a user
+		to request a dump of the current configuration, edit it, and
+		re-upload it to one or several KISS modems. A canonical example
+		of this type of application is the OTWINCFG tool 
+		provided by Argent Data for their trackers \cite[\S17.6]{ot3manual}.
+	\item Channel utilization information could include how much time
+		is consumed on the channel by AFSK data that does not decode as
+		valid packets. Some APRS applications attempt to estimate channel
+		utilization based on received packets, which will consistently
+		under-estimate the actual figure due to frame preambles
+		and frames which fail their checksums never being reported.
+		The worst case of continuous collisions would result in
+		the application misinterpretting no received packets as
+		an entirely idle channel, where the opposite is the actual case.
+\end{itemize}
 
-While not fatal, there are a small number of deficiencies with the KISS
-protocol that keep it from being an ideal link protocol between hosts and modems.
+\section{Conclusion}
 
-KISS makes no provisions for checksums or error detection of frames transferred
-between host and modem. This is not a problem for the typical system
-using a short RS-232 link where bit errors are unexpected.
-Unfortunately, other applications of KISS have required checksums, which
-have been implemented via
-several less-well-documented extensions to KISS, such as SMACK\cite{smack}, 
-which see limited application or support.
-
-KISS makes no provisions for other channel access methods other than
-Carrier Sense Multiple Access, which limits its usefulness on amateur networks
-using other channel access methods such as Time Division Multiple Access
-or Demand Assigned Multiple Access, which are more popular in European 
-packet networks but are also used in some insular APRS networks 
-(see section~\ref{subsec:timeslot})
-
-There are no supported command codes from modem to host other than the data frame
-command, which prevents hosts from being able to interrogate the device 
-about out-of-band information such as the modem's model and feature set,
-the current values of channel access parameters, or any measure of the 
-channel occupancy other than successfully received complete packets.
-
+KISS have proven itself tremendously useful as it has decoupled the modem
+hardware from the network protocol used above it.
+The decreasing price and size of single-board computers such as the
+BeagleBone have cemented the popularity of network nodes built using
+a full-fledged computer that uses a KISS modem as a radio interface.
+It should be appreciated that KISS enables the development of new
+modulation schemes without the need to modify existing APRS software
+to run over new higher-quality links.
+Future work involving KISS should involve studying the quanitative risks
+of not using checksums on the serial link between the host and the modem
+and the feasibility of extending KISS to allow OOB information to be passed
+from modem to host.
 
