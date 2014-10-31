@@ -90,6 +90,15 @@ heard in the order listed.
 	\item HIGHA digipeats it as: WIDE*
 	\item HIGHB drops the packet since it has no more ``unconsumed" hops.
 \end{itemize}
+
+Note the use of the asterisk to represent ``consumed" digipeater hops.
+This is marked in the binary AX.25 frame by setting the ``H" bit in the
+repeater address field.
+This notation for the H bit comes from the monitor mode
+of the TAPR TNC2, which has become the de-facto standard way to represent
+APRS packets textually, such as in log files, documentation, and the
+TCP/IP based APRS Internet System backbone.
+
 To reach further out in the network, the user would append additional WIDE statements to their path:
 
 \begin{itemize}
@@ -126,6 +135,9 @@ While at the same time taking advantage of low-level digipeaters when needed:
 Even though neither high-level digipeater directly heard the tracker,
 the low-level digipeater relayed the packet to HIGHA so at least one high-level
 digipeater was able to repeat the packet for the rest of the network.
+
+Note that this use of RELAY and WIDE are currently deprecated,
+and should not be used on the public APRS network.
 
 \section{WIDEn-N}
 
