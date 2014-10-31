@@ -21,7 +21,7 @@ configuration parameters such as the preamble length and CSMA parameters.
 
 This meant that the existing TNCs with their radio interfaces could
 be upgraded once with new ROMs that supported KISS and any new network behavior
-or protocol could be instead implemented on a seperate host PC.
+or protocol could be instead implemented on a separate host PC.
 This was particularly valuable since personal PCs were much
 more productive development environments than the 256kb EPROMs and 8 bit
 Z80 microprocessors of the popular Tucson Amateur Packet Radio TNC 2 product
@@ -81,8 +81,8 @@ modem, including channel access settings and hardware specific settings
 beyond the type `0' data frame that should be transmitted on the channel.
 In the opposite direction, from modem to host, the KISS specification explicitly
 limits frame types to only data frames.
-This disallows hosts from being able to interogate modems as to their
-current configuation settings or any information about the RF channel
+This disallows hosts from being able to interrogate modems as to their
+current configuration settings or any information about the RF channel
 beyond packets as they are received.
 
 The author suggests that a revision to the KISS specification be considered
@@ -92,7 +92,7 @@ as OOB data that they are not interested in,
 while enabling new applications such as interactive configuration programs
 and give more meaningful metrics as to current channel utilization.
 \begin{itemize}
-	\item An interactive configation program would allow a user
+	\item An interactive configuration program would allow a user
 		to request a dump of the current configuration, edit it, and
 		re-upload it to one or several KISS modems. A canonical example
 		of this type of application is the OTWINCFG tool 
@@ -104,7 +104,7 @@ and give more meaningful metrics as to current channel utilization.
 		under-estimate the actual figure due to frame preambles
 		and frames which fail their checksums never being reported.
 		The worst case of continuous collisions would result in
-		the application misinterpretting no received packets as
+		the application misinterpreting no received packets as
 		an entirely idle channel, where the opposite is the actual case.
 \end{itemize}
 
@@ -118,7 +118,7 @@ a full-fledged computer that uses a KISS modem as a radio interface.
 It should be appreciated that KISS enables the development of new
 modulation schemes without the need to modify existing APRS software
 to run over new higher-quality links.
-Future work involving KISS should involve studying the quanitative risks
+Future work involving KISS should involve studying the quantitative risks
 of not using checksums on the serial link between the host and the modem
 and the feasibility of extending KISS to allow OOB information to be passed
 from modem to host.
