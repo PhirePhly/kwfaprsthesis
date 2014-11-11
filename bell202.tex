@@ -16,7 +16,7 @@ The primary points made will be:
 	\item Presenting a reference implementation of the checksum used
 		to detect transmission errors in Amateur Bell 202 frames.
 	\item Discussing how the baseband modem signal should be modulated using
-		VHF voice radios and what challenges this presents
+		VHF voice radios and some challenges this presents
 		to modem performance.
 \end{itemize}
 
@@ -38,21 +38,21 @@ produces 1200Hz and 2200Hz tones).
 These tones represent a binary one and zero respectively and transitions occur
 at a rate of 1200 symbols per second.
 Originally developed by AT\&T for use on the telephone network \cite{202tspec},
-Bell 202 was popular among amateur radio operators due to the abundance
+Bell 202 became popular among amateur radio operators due to the abundance
 of modems available on the second-hand market in 1981 when the FCC authorized
 amateur packet operations in the United States \cite{gatewaypacket}.
 
 \begin{figure}[!b]
 	\centering
 	\includegraphics[width=0.4\textwidth]{src/dia/osi_bell202}
-	\caption{OSI network layers for a typical packet radio application. 
+	\caption{OSI network layers for APRS. 
 	This paper refers to the entirety of layer 1 as ``Amateur Bell 202"}
 	\label{fig:osibell}
 \end{figure}
 
 There isn't a particularly clean
 mapping of packet radio protocols to the seven layers of the OSI
-network model, but one can be formed 
+Network Model, but one can be formed 
 to help clarify references to the different layers in this paper.
 Figure \ref{fig:osibell} shows the ISO model which will be used in
 the rest of this paper.
@@ -62,14 +62,14 @@ the X.25 network protocol \cite[\S1.1]{ax25spec},
 the physical layer implicitly includes the High-Level Data Link Control (HDLC) 
 protocol for framing and bit stuffing \cite{n1vgphy}.
 Since using HDLC with Bell 202 modems is so implicit in amateur radio systems, 
-the layer 1 packet protocol should be called ``Amateur Bell 202," to
+the Layer 1 packet protocol should be called ``Amateur Bell 202," to
 distinguish it from the original Bell 202 developed by AT\&T.
 
 One implication of using HDLC is that frames are not encoded using the
-1200Hz mark and 2200Hz space symbols of traditional Bell 202,
-but instead use an
-inverted non-return to zero (NRZI) encoding.
-NRZI calls for zeros in the original bit stream to be encoded as a
+1200Hz mark and 2200Hz space symbols of traditional Bell 202.
+Instead it uses an
+inverted non-return to zero (NRZI) encoding,
+which calls for zeros in the original bit stream to be encoded as a
 continuous-phase frequency transition between consecutive symbols, 
 while ones are encoded as
 the lack of a frequency change between two symbols \cite{iso13239}.
@@ -163,10 +163,10 @@ There are a number of important facets to note:
 
 It is important to note that the presentation of the HDLC framing
 and checksum
-in Figure \ref{fig:bell202format} as part of the layer 1 modulation 
+in Figure \ref{fig:bell202format} as part of the Layer 1 modulation 
 instead of as part of the layer 2 AX.25 frame is 
 novel to this work and hasn't been seen in any of the existing literature.
-The ISO network model would also disagree with this classification,
+This classification isn't consistent with the traditional OSI model,
 but the author's main objective is to decouple HDLC from AX.25.
 This change is suggested because including the frame checksum and flags
 in the layer 2 documentation confuses the separation between Amateur Bell 202 
@@ -326,7 +326,7 @@ there is no guarantee that it won't suffer from receiving another
 station's pre-emphasized signal or be received by another station using de-emphasis.
 
 Different types of Bell 202 modems vary in how sensitive they are to this high/low
-pass filtering effect, but more importantly there is no benchmark established
+pass filtering effect More importantly, there is no specification established
 for what level of pre-/de-emphasis a modem should tolerate.
 One suitable source for such a benchmark would be to go back to the
 telephone networks where Bell 202 was originally used.
@@ -405,7 +405,7 @@ The PErsist value should be tuned based on how likely another station is to tran
 during the same time slot considering the number of other stations with 
 pending traffic attempting to gain the channel.
 
-A typical modem supporting the p-persistent algorithm will need three values adjusted
+A typical modem supporting the P-persistent algorithm will need three values adjusted
 based on the specific network hardware in use; PErsist, SLottime, and the 
 transmitter preamble time TXDelay mentioned earlier in this paper.
 
@@ -437,7 +437,7 @@ transmitter preamble time TXDelay mentioned earlier in this paper.
 		well aligned clock recovery mechanisms.
 \end{itemize}
 
-There are additional channel access methods beyond the two mentioned
+There are additional channel access methods beyond the two mentioned above
 that are applied in amateur radio packet networks. 
 Examples include Demand Assigned Multiple Access (DAMA),
 which is primarily used in European packet networks,

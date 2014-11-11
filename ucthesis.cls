@@ -801,9 +801,7 @@ Thesis Committee Chair
 %                           1 = A, 2 = B, etc.
 %
 
-\def\thepart          {\arabic{part}}
-%% A matter of personal taste--JTW %%
-%% \def\thechapter       {\arabic{chapter}}
+\def\thepart          {\Roman{part}}
 \def\thechapter       {\arabic{chapter}}
 \def\thesection       {\thechapter.\arabic{section}}
 \def\thesubsection    {\thesection.\arabic{subsection}}

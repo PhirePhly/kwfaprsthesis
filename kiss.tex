@@ -2,8 +2,8 @@
 
 During the early 1980's when amateur Terminal Node Controllers were developed,
 the expectation was that the TNC would be handling 
-the entire packet protocol stack up to the final presentation to the user, which
-could be done using a dumb terminal such as a VT100 or line printer 
+the entire packet protocol stack up to the final presentation to the user.
+This would have been done using a dumb terminal, such as a VT100, or line printer 
 and a keyboard. 
 As personal computers became affordable in the late 1980's, the expectation that
 the entire application stack would run on the embedded TNC became severely limiting
@@ -21,11 +21,11 @@ configuration parameters such as the preamble length and CSMA parameters.
 
 This meant that the existing TNCs with their radio interfaces could
 be upgraded once with new ROMs that supported KISS and any new network behavior
-or protocol could be instead implemented on a separate host PC.
+or protocol could be implemented on a separate host PC.
 This was particularly valuable since personal PCs were much
 more productive development environments than the 256kb EPROMs and 8 bit
 Z80 microprocessors of the popular Tucson Amateur Packet Radio TNC 2 product
-and it's several clones \cite{TNC2manual}.
+and its clones \cite{TNC2manual}.
 
 \section{Isolating Modulation from Network}
 
@@ -64,11 +64,11 @@ Amateurradio-CRC-KISS), which is a backwards compatible extension to KISS
 which includes a frame checksum to protect against frame corruption \cite{smack}.
 
 Traditionally, KISS links between the host PC and KISS modems have been deployed
-over relatively short RS-232 serial links (three to six feet),
-though an increasing number of modems are moving to a pure USB implementation.
-What the author has been unable to find is any evidence that when correctly
-deployed that these types of short serial links stand any risk of corruption
-which could be avoided by using the SMACK extension.
+over relatively short RS-232 serial links (three to six feet).
+An increasing number of contemporary modems are moving to a pure USB implementation.
+What the author has been unable to find is any evidence that, when correctly
+deployed, these types of short serial links have any risk of corruption
+which is avoided by using the SMACK extension.
 Further study is needed to examine typical APRS KISS deployments to justify
 the additional effort required to implement and deploy SMACK above KISS to
 protect against any possible corruption risks.
@@ -113,12 +113,13 @@ and give more meaningful metrics as to current channel utilization.
 KISS have proven itself tremendously useful as it has decoupled the modem
 hardware from the network protocol used above it.
 The decreasing price and size of single-board computers such as the
-BeagleBone have cemented the popularity of network nodes built using
+Texas Instrument's BeagleBone have cemented the popularity of
+network nodes built using
 a full-fledged computer that uses a KISS modem as a radio interface.
 It should be appreciated that KISS enables the development of new
 modulation schemes without the need to modify existing APRS software
 to run over new higher-quality links.
-Future work involving KISS should involve studying the quantitative risks
+Future work involving KISS should include studying the quantitative risks
 of not using checksums on the serial link between the host and the modem
 and the feasibility of extending KISS to allow OOB information to be passed
 from modem to host.

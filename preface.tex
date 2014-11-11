@@ -8,7 +8,7 @@ amateur radio QEX technical journal where he explored improving the soundcard
 digital signal processing modem used for amateur packet radio by passing the 
 original signals through a series of band-pass filters. His improvements were
 commendable, and his article was very well written, but what bothered me was that 
-more than three decades after the inception of amateur radio, we're still seeing
+more than three decades after the inception of amateur radio, we are still seeing
 measurable improvement in the modems we use for the original modulation techniques.
 
 This thesis started with me wanting to tear apart the current state of the various
@@ -20,19 +20,23 @@ while his library is useful on desktop computers and Android devices, it left
 out in the cold the many different 8, 16, and 32 bit fixed-point microcontrollers
 that are often used for embedded modems in amateur radio projects.
 
-As I started to dig into the specifications for the various network layers used
+As I started to examine the specifications for the various network layers used
 in the amateur Automatic Packet Reporting System (namely Bell 202, AX.25, and
 APRS), I grew increasingly shocked and confused when I kept finding that the
-documentation I was looking for was skimmed over or simply didn't exist. 
+documentation I was looking for was poorly written or simply didn't exist. 
 Protocol specifications would identify variables critical for network performance,
-and then never touch on what the actual value should be. Many of the documents
+and then never give guidance on what the actual value should be.
+Many of the documents
 on the expected behavior for network nodes consist solely of console commands
 to be run on specific pieces of discontinued hardware instead of actual protocol
-behavior. Every article touching on parts of the network disagreed with 
-other documentation on the subject, and was often internally inconsistent as well.
+behavior.
+Most articles discussing aspects of the network disagreed with 
+other documentation on specific details,
+and was often internally inconsistent as well.
 
 The final turning point was an interview in March, 2014 with Scott Miller, the
-designer for one of the more popular lines of contemporary modems used in the
+designer for Open Trackers, 
+which are one of the more popular lines of contemporary modems used in the APRS
 network.
 I brought a laundry list of inconsistencies from the network specs and he
 explained how much effort he had put into reverse engineering the existing 
@@ -40,7 +44,7 @@ hardware. It was an eye-opening conversation that drove home how much the
 amateur packet network has grown haphazardly over the past three decades into
 a jumble of band-aids applied upon band-aids.
 
-I then realized that the most needed academic research on the topic of APRS isn't
+I realized that the most important academic research on the topic of APRS isn't
 how to squeeze out another incremental improvement in one of the modem DSP
 algorithms, but an over-arching prolegomenon on the entire network stack as it 
 actually exists today. The existing documentation clearly falls short, and 
@@ -53,13 +57,11 @@ Ideally, this document would be able to stand by itself as a complete
 ``implementer's guide" to APRS from the physical layer all the way up to high level
 aggregate network behavior, but the scope of reverse engineering that much
 behavior, documenting it, and then verifying the documentation quickly becomes
-monumental. However enjoyable it would be to earn a PhD studying and optimizing
-a 1200 baud network built in the 20\textsuperscript{th} century, I'm regrettably 
-not the person to answer all of the standing questions on the network. 
+monumental. 
 It is my hope that this document does at least identify the most glaring 
-short-falls in the current documentation and network design, and give answers to
-the questions that can be most easily answered.
+short-falls in the current documentation and network design, and gives answers to
+the questions that can be answered while staying within the scope of this survey.
 
-For every problem I attempt to identify and give an answer to in this paper, there
-is easily twice as many unanswered questions which each warrant being considered 
+For every identified problem which is answered in this paper, there
+are twice as many unanswered questions which each warrant being considered 
 as a thesis of their own.

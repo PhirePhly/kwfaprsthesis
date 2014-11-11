@@ -48,7 +48,8 @@ was deemed not needed for APRS and several alternative uses for the field have b
 The most popular application for this field is to be used as a tracker identifier, where a
 six character identifier is allocated from the APRS Working Group to identify a specific 
 APRS TNC and firmware version. 
-This provides valuable information to the rest of the APRS network since APRS
+This provides valuable information to the rest of the APRS network.
+APRS
 TNCs often ``misbehave" and it is helpful to be able to immediately identify the original
 developer for a remote APRS node. 
 Experimental trackers which have not yet received a tracker ID may use the 
@@ -61,7 +62,7 @@ the beaconing APRS station, with an
 additional SSID appended to the station, which may range from zero to 15. Source addresses must 
 be at least three characters long, and may not be any longer than six. Stations using AX.25 
 over RF are limited to the SSID's of 0 to 15 due to AX.25's binary format, 
-while APRS imposes a looser standard that the SSID is only limited to 
+while APRS imposes a looser standard such that the SSID is only limited to 
 two alphanumeric characters.
 
 \subsection{Routing Path}
@@ -75,12 +76,15 @@ set on the source address field. The path must consist of an integer number of s
 The original AX.25 version 2.0 spec allowed for anywhere from zero to eight digipeaters to
 be included in an AX.25 frame. Unfortunately, due to the unreliable nature of amateur 
 packet radio, packets with a routing path requesting as many as eight hops would rarely be 
-successfully delivered to the end station, so the version 2.2 specification for AX.25 was
+successfully delivered to the end station.
+The version 2.2 specification for AX.25 was
 rewritten limiting the number of requested digipeaters to two with the argument that packets
 traveling beyond two hops should be handled by a higher layer protocol than AX.25.
-This is because AX.25 doesn't guarantee delivery from a digipeater to another station,
-so packets passing through a digipeater that are lost need to be resent from their origin,
-where a higher layer protocol could recover from a lost packet locally without twice consuming
+Because AX.25 doesn't guarantee delivery from a digipeater to another station,
+packets passing through a digipeater that are lost need to be
+resent from their origin.
+Higher layer protocols can recover from a lost packet locally 
+without needing to twice consume
 the bandwidth used to get the packet to the digipeater.
 
 This concept of higher-layer retries and limited digipeater use is ignored by APRS.
@@ -89,13 +93,13 @@ and users are only strongly discouraged from using a large number of hops.
 
 \subsection{Control Flags}
 
-The Control Flag octet indicates what type of AX.25 frame the considered packet is. 
+The Control Flag octet indicates different modes for the AX.25 frame.
 Since APRS strictly uses only Unconnected Information (UI) frames, this field must
-contain the value of 0x03.
+contain the value 0x03.
 
 \subsection{Protocol IDentifier}
 
-The Protocol IDentifier (PID) field is normally used to identify the layer three protocol
+The Protocol IDentifier (PID) field is normally used to identify the Layer 3 protocol
 being transported by AX.25. TAPR has reportedly stopped processing requests for new PID
 values to be issued to new layer 3 applications of AX.25 \cite{millernopid}, 
 which is a possible explanation for why APRS doesn't have a unique PID.
@@ -103,11 +107,12 @@ It instead uses the value of 0xF0, incorrectly indicating that no layer 3 protoc
 
 \subsection{Information Field}
 
-The rest of the AX.25 frame contains the APRS payload in what is called the Information field.
-The end of the Information field is indicated by the layer 1 modulation, which is traditionally
+The rest of the AX.25 frame contains the APRS payload in
+what is called the Information Field.
+The end of the Information Field is indicated by the Layer 1 modulation, which is traditionally
 the Amateur Bell 202 FCS and 0x7E flag.
 
-The maximum transmission unit for the Information field is 256 octets, and APRS imposes
+The maximum transmission unit for the Information Field is 256 octets, and APRS imposes
 a minimum of one octet identifying the type of APRS packet being carried \cite{aprsspec}.
 
 \section{FCC Identification Requirements}
@@ -146,7 +151,7 @@ using tactical callsigns is that it isn't always clear what a station's callsign
 		station transmitting it.
 	\item There is no standard secondary place for a station's ``real" callsign 
 		when using a tactical call.
-		Operators often program digipeaters with unclear comments that fail to make it clear
+		Operators often program digipeaters with comments that fail to make it clear
 		what their callsign actually is.
 \end{itemize}
 
