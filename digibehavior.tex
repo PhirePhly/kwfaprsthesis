@@ -25,9 +25,10 @@ each digipeater's callsign or location.
 
 As APRS has grown from an experimental network
 to one that covers much of the country,
-it has adopted and discarded multiple sets of digipeater aliases
-and sets of expectations as to each node's behavior regarding those aliases,
-without making it clear that the previous behavior has been deprecated.
+it has adopted and discarded multiple sets of digipeater aliases.
+As the expectations as to each node's behavior regarding those aliases have changed,
+the APRS community has failed to make it clear that
+the previous behavior has been deprecated.
 The rest of this chapter will walk through the history
 of the basic set of routing aliases,
 followed by an overview of possible digipeater behaviors.
@@ -42,156 +43,240 @@ on digipeater behavior,
 so many different interpretations and ideas have been developed, which has
 created several divergent schools of thought on what behavior is best.
 Writing a definitive analysis on digipeater behavior is a large undertaking
-that warrants further consideration beyond what is possible in this paper.
+that warrants further consideration beyond what is possible in this work.
 
-\section{RELAY,WIDE}
+\section{Routing Aliases}
 
-The original conception of APRS included several aliases, but the most important were RELAY
-and WIDE. Digipeaters were divided into two categories depending on if they were high-level
-(on the top of large towers, mountain tops, etc.) or low-level (primarily sub-40' home installs).
+The original definition of APRS included several aliases,
+the most notable of which were RELAY and WIDE.
+Digipeaters were divided into two categories depending on if they were high-level
+(on the top of large towers, mountain tops, etc.)
+or low-level (typically residential sites).
+Low-level sites would only digipeat packets which used the RELAY alias
+or the digipeater's literal callsign,
+where high-level digipeaters would respond to both RELAY and WIDE in addition
+to their callsign.
+This enabled a user to selectively include or exclude the numerous low-level
+digipeaters depending on if the station had sufficient power to
+reach the high-level WIDE digipeaters or needed the low-level receivers
+to assist with being heard on the network.
 
-Low-level ``fill-in" digipeaters are needed to assist low-power moving trackers in reaching the
-primary high-level digipeater network where it would be possible to be heard by other stations.
-Without these fill-in repeaters, lower power beacons would be lost in the noise and never reach the 
-network at large. Therefore, trackers that need this help would begin their routing path with RELAY.
-The low-level digipeaters should only respond to the RELAY alias.
+A station would construct their desired routing path as an ordered list
+of callsigns and aliases.
+For example, a station requesting three high-level hops out from their position
+would use the routing path ``WIDE,WIDE,WIDE" when beaconing in a new area where
+the local digipeater callsigns were unknown.
+Since these strings of several WIDE aliases proved to be common,
+the APRS community developed the concept of WIDEn-N, where multiple
+WIDE aliases are summarized as a single routing alias to reduce the average
+packet length on the network.
 
-The high-level digipeaters that consist the major portion of the network coverage in terms of area
-would respond to the alias of WIDE, in addition to the alias of RELAY, such that if a tracker got
-lucky and happened to be decoded by one of the high level digis it wasn't punished for first requesting 
-help from a lower-level digi.
+A WIDEn-N alias represents multiple WIDE aliases by using two numbers,
+represented by n and N.
+The first n represts the originally requested number of WIDE hops,
+where the trailing N represents the remaining number of hops that have not yet
+been consumed.
+Therefore, the alias ``WIDE3-2" represents an original request for three hops
+that has already been processed by one digipeater.
+Once a WIDEn-N alias gets decremented to WIDEn-0, it is considered entirely
+consumed, having been processed by n digipeaters.
 
-This RELAY for low-level and both RELAY and WIDE alias for high-level digipeater concept worked well
-because the existing packet hardware at the time natively supported configuring these aliases, but
-became increasingly problematic as the APRS network grew and became higher density. Each digipeater
-could not verify that they had already re-transmitted a beacon, so single packets would ``ping-pong" 
-between digipeaters repeatedly until the entire path was finally consumed.
+Low-level ``fill-in" digipeaters are needed to assist low-power 
+moving trackers in reaching the primary high-level digipeater network
+before it is possible to be received by other stations.
+Without these fill-in digipeaters, 
+low power beacons would be lost in the noise and never reach the network at large.
+This allows the network to have a very high density of these low-level
+digipeaters without all of them generating network traffic by repeating every
+packet moving through the network requesting WIDE digipeater service.
 
-To solve this, a new digipeater behavior called deduplication (dedup) was implemented.
-Each digi is expected to store a checksum of every recently heard or transmitted packet
-based on the source callsign and packet contents for a limited amount of time. 
-Should a digipeater receive a packet that is already in it's ``recently heard" database,
-it should not digipeat it again, since that would likely cause additional network traffic
-with little benefit.
-It's important to note that the concept of a ``unique" packet is based \emph{solely} on the
-source address and information field; APRS doesn't guarantee the destination address to be
-an invariant, and the routing path will change on each hop.
-The original design did not specify how long this dedup window should be,
-but general consensus has settled on removing packets from the deduplication database after 30 seconds.
+\section{Examples}
 
-As an example, consider a small APRS network with three digipeaters: LOWDIG, HIGHA, and HIGHB.
+As an example, consider a small APRS network with one tracker and three
+digipeaters: TRACKR, LOWDIG, HIGHA, and HIGHB.
+TRACKR is an APRS tracker originating all of the packets in these examples.
 LOWDIG is a low level digipeater that only responds to the RELAY alias, 
-where HIGHA and HIGHB are both high-level digis and thus respond to both RELAY and WIDE.
-Consider the following sequences of routing paths,
-given various initial paths originating from a tracker and the assumption that packets are only
-heard in the order listed.
-\begin{itemize}
-	\item Tracker transmits a packet with the path: WIDE
-	\item HIGHA digipeats it as: WIDE*
-	\item HIGHB drops the packet since it has no more ``unconsumed" hops.
-\end{itemize}
+where HIGHA and HIGHB are both high-level digis and thus respond to
+both RELAY and WIDE.
+Consider the following sequences of routing paths:
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		WIDE1-1 & TRACKR \\ \hline
+		WIDE1* & HIGHA \\ \hline
+		--- & HIGHB \\ \hline
+	\end{tabular}
+	\caption{TRACKR requesting a single WIDE hop}
+	\label{tab:singlewide}
+\end{table}
 
 Note the use of the asterisk to represent ``consumed" digipeater hops.
-This is marked in the binary AX.25 frame by setting the ``H" bit in the
-repeater address field.
+This is originally represented in the binary AX.25 frame
+by setting the ``H" bit in the repeater address field.
 This notation for the H bit comes from the monitor mode
 of the TAPR TNC2, which has become the de-facto standard way to represent
 APRS packets textually, such as in log files, documentation, and the
 TCP/IP based APRS Internet System backbone.
+The TAPR TNC2 also defined the convention to drop the -0 SSID.
+
+The ``---" is used in Table \ref{tab:singlewide} to represent that WIDEB does not
+repeater this beacon.
+It receives the repeated packet from WIDEA, but there are no un-consumed
+hops remaining in the path, so the packet is dropped.
 
 To reach further out in the network, the user would append additional WIDE statements to their path:
-
-\begin{itemize}
-	\item Tracker: WIDE,WIDE
-	\item HIGHA: WIDE*,WIDE
-	\item HIGHB: WIDE*,WIDE*
-\end{itemize}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		WIDE2-2 & TRACKR \\ \hline
+		WIDE2-1 & HIGHA \\ \hline
+		WIDE2* & HIGHB \\ \hline
+	\end{tabular}
+	\caption{TRACKR requesting two WIDE hops}
+	\label{tab:twowide}
+\end{table}
 
 If the tracker doesn't happen to reach any of the high-level digis, 
-but does reach a low-level one, a path of WIDE,WIDE would do them no good:
+but does reach a low-level one, a WIDE path would do them no good:
 
-\begin{itemize}
-	\item Tracker: WIDE,WIDE
-	\item LOWDIG drops the packet since the first path alias is not RELAY
-\end{itemize}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		WIDE2-2 & TRACKR \\ \hline
+		--- & LOWDIG \\ \hline
+	\end{tabular}
+	\caption{TRACKR requesting WIDE hops but only reaching a relay digi}
+	\label{tab:lowhearswide}
+\end{table}
 
-Thus, a path of RELAY,WIDE would better serve the user,
-since they could use two high-level digis should they happen to initially reach one:
+Table \ref{tab:lowhearswide} shows that LOWDIG drops the packet since
+TRACKR only requests hops from WIDE digipeaters.
+Therefore, stations that expect to often be depending on low-level
+digipeaters should begin their path with a RELAY alias.
 
-\begin{itemize}
-	\item Tracker: RELAY,WIDE
-	\item HIGHA: RELAY*,WIDE
-	\item HIGHB: RELAY*,WIDE*
-\end{itemize}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		RELAY,WIDE1-1 & TRACKR \\ \hline
+		RELAY*,WIDE1-1 & LOWDIG \\ \hline
+		RELAY*,WIDE1* & HIGHA \\ \hline
+	\end{tabular}
+	\caption{TRACKR using LOWDIG to reach HIGHA}
+	\label{tab:usingrelay}
+\end{table}
 
-While at the same time taking advantage of low-level digipeaters when needed:
-\begin{itemize}
-	\item Tracker: RELAY,WIDE
-	\item LOWDIG: RELAY*,WIDE
-	\item HIGHA: RELAY*,WIDE*
-	\item HIGHB drops the packet due to no remaining hops
-\end{itemize}
+Table \ref{tab:usingrelay} is an instance when it's important that high-level
+digipeaters also respond to the RELAY alias, since digipeaters traditionally
+only process the first unconsumed alias.
+Should TRACKR happen to be able to reach HIGHA but be out of range of LOWDIG,
+it's desirable for HIGHA to still repeat it.
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		RELAY,WIDE1-1 & TRACKR \\ \hline
+		RELAY*,WIDE1-1 & HIGHA \\ \hline
+		RELAY*,WIDE1* & HIGHB \\ \hline
+	\end{tabular}
+	\caption{HIGHA also responding to the RELAY alias}
+	\label{tab:usingrelay}
+\end{table}
 
-Even though neither high-level digipeater directly heard the tracker,
-the low-level digipeater relayed the packet to HIGHA so at least one high-level
-digipeater was able to repeat the packet for the rest of the network.
+\section{Deduplication Behavior}
 
-Note that this use of RELAY and WIDE are currently deprecated,
-and should not be used on the public APRS network.
+As the APRS network grew and the density of digipeaters and stations increased
+in the late 1990s and early 2000s,
+it became increasingly important that digipeaters don't ``ping-pong" packets
+between themselves.
+Since APRS' routing is a hop-limited flooding protocol,
+there was no mechanism preventing a digipeater from repeating a packet multiple
+time.
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		WIDE3-3 & TRACKR \\ \hline
+		WIDE3-2 & HIGHA \\ \hline
+		WIDE3-1 & HIGHB \\ \hline
+		WIDE3* & HIGHA \\ \hline
+	\end{tabular}
+	\caption{A packet ``ping-ponging" between HIGHA and HIGHB}
+	\label{tab:widepingpong}
+\end{table}
 
-\section{WIDEn-N}
+Table \ref{tab:widepingpong} shows how HIGHA could hear an echo from HIGHB
+and transmit the same packet twice, needlessly using additional network bandwidth.
+To prevent this, a new behavior was implemented in digipeaters where an
+``aging hash table" was used to store a hash of each packet for a limited
+length of time (this period is never formally specified, so the author
+suggests 30 seconds be used as it is a popular choice).
+When a new packet with hops remaining in the path are received,
+a hash of the source callsign and Information Field are compared against
+the hash table to check if the same packet had been recently transmitted.
+If so, the packet is dropped, but if there is no match in the hash table
+the packet is digipeated and its hash added to the hash table.
+This hash is then dropped from the hash table 30 seconds later to allow
+the digipeater to repeat the same packet the next time the original station
+beacons it.
 
-There was an inherent flaw in the RELAY,WIDE alias set
-in that there was no way to summarize the requested path.
-Every alias in the routing path lengthens the AX.25 frame by 7 octets,
-so long paths such as ``RELAY,WIDE,WIDE,WIDE" were a burden on the network
-by adding 28 octets to every packet.
-WIDEn-N was developed as a method to condense multiple WIDE aliases into a single WIDEn alias.
-Therefore, ``WIDE,WIDE,WIDE" could be rewritten as ``WIDE3-3," and each digipeater would
-decrement the SSID instead of marking each WIDE alias as consumed until the entire WIDEn-N had
-been consumed.
-
-\begin{itemize}
-	\item Tracker: WIDE3-3
-	\item HIGHA decrements the non-zero SSID and transmits the packet as: WIDE3-2
-	\item HIGHB interprets WIDE3-2 as having two hops remaining of the original three, 
-		and consumes one: WIDE3-1
-	\item HIGHC uses the final hop remaining and marks the entire WIDE3 as consumed: WIDE3*
-\end{itemize}
-
-This change only effects the WIDE alias and not RELAY,
-since trackers MUST NOT use more than a single RELAY alias only at the beginning of their packet.
-This is because it is assumed that high-level digipeaters have full transmit coverage over
-the area of low-level digipeaters below them, so using a path such as WIDE,RELAY would
-cause all of the low-level digipeaters below a high-level one to needlessly digipeat the packet.
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		WIDE3-3 & TRACKR \\ \hline
+		WIDE3-2 & HIGHA \\ \hline
+		WIDE3-1 & HIGHB \\ \hline
+		--- & HIGHA \\ \hline
+	\end{tabular}
+	\caption{HIGHA drops the echo heard from HIGHB}
+	\label{tab:dropecho}
+\end{table}
+This behavior, as shown in Table \ref{tab:dropecho},
+proved to be tremendously helpful in improving the performance
+of the APRS network by removing loops in each packet's flooding behavior.
+No quantitative analysis has been found on the subject, but many areas suffering
+from congestive collapse reportedly became usable again.
 
 \section{Deprecation of RELAY}
 
-As the APRS network grew and the density of digipeaters increased in the late 1990s and early 2000s,
-the deduplication behavior of each digi became increasingly important to the health of the network.
-It became not unusual for digipeaters to be in range of three to five other digipeaters,
-so without deduplication every packet could travel along an exponential number of
-loops available in the densely connected mesh of digipeaters being built for the APRS network.
-
-At this same time, APRS was becoming popular enough among amateur radio operators that
-equipment manufacturers such as Kantronics, MFJ, and Kenwood started adding APRS-specific features
-into their TNC products.
+Since APRS was becoming popular among amateur radio operators,
+equipment manufacturers such as Kantronics, MFJ, and Kenwood
+started adding APRS-specific features into their off-the-shelf TNC products.
 One of the most popular TNCs used for digipeater sites was the Kantronics KPC-3+,
-which turned out to have an anomaly in it's 
-version 9.0 firmware ROM regarding deduplication \cite{kpc3bugbulletin}.
+which turned out to have a fatal anomaly in its 
+version 9.0 firmware ROM regarding the deduplication behavior just
+presented \cite{kpc3bugbulletin}.
 
 The KPC-3+ correctly deduplicated packets routed via the WIDEn-N system,
-but failed to correctly add to or consult the dedup database for single-hop
+but failed to correctly add to or consult the dedup hash table for single-hop
 aliases such as RELAY.
-This meant that popular routing paths such as ``RELAY,WIDE2-2" could result in
-routing loops on the network:
+This meant that popular routing paths such as ``RELAY,WIDE2-2" would
+still result in routing loops on the network:
 
-\begin{itemize}
-	\item Tracker: RELAY,WIDE2-2
-	\item HIGHA doesn't add the packet to it's dedup database: RELAY*,WIDE2-2 
-	\item HIGHB: RELAY*,WIDE2-1
-	\item HIGHA hears the echo from HIGHB and thinks it hasn't heard the packet before: RELAY*,WIDE2*
-\end{itemize}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | l | l | }
+		\hline
+		Path & Transmitted by \\ \hline
+		RELAY,WIDE2-2 & TRACKR \\ \hline
+		RELAY*,WIDE2-2 & HIGHA \\ \hline
+		RELAY*,WIDE2-1 & HIGHB \\ \hline
+		RELAY*,WIDE2* & HIGHA \\ \hline
+	\end{tabular}
+	\caption{HIGHA failing to dedup its prior RELAY}
+	\label{tab:kpc3fail}
+\end{table}
 
 Kantronics did release a patched ROM v9.1 in 2007, but to insufficient effect.
 Getting access to digipeaters at remote radio sites is burdensome,
@@ -199,8 +284,9 @@ and physically replacing the 32 pin ROM chip inside the KPC-3+
 with a \$40 replacement\footnote{Kantronics did offer free v9.1 ROM exchanges to 
 any customers who had purchased their TNCs in the past two years} 
 proved to be a sufficient barrier that many APRS digipeaters still
-suffer from this defect.\footnote{It has been jokingly said that once a digipeater
-	goes on the air, none of its settings will be changed until either the digipeater
+suffer from this defect today.\footnote{It has been jokingly said 
+	that once a digipeater goes on the air,
+	none of its settings will be changed until either the digipeater
 or its owner dies}
 
 Due to this growing population of digipeaters suffering from the Kantronics or other
@@ -233,19 +319,20 @@ Allowing this one exception to the originating station setting the two WIDEn-N
 numbers the same, while not providing sufficient documentation
 to make it abundantly clear that this is the only allowable exception,
 has muddied the waters as to the actual meaning of the first number.
-Taking a sample of traffic on the APRS-IS world-wide APRS backbone shows
-0.7\% of APRS traffic requesting routing paths such as WIDE1-2 or WIDE2-3,
-which should not ever exist.
+Based on a sample of 21 million packets on the APRS-IS world-wide APRS 
+backbone on May 8th, 2014, it was found that
+0.7\% of APRS packets requested routing paths such as WIDE1-2 or WIDE2-3,
+which should not ever exist before or after the WIDE2-1 exception was made..
 A station beaconing with a path of WIDE2-3 indicates that they are requesting
-two hops, and three of those hops are remaining, which is non-sense.\footnote{The
+two hops, and three of those hops are remaining, which is nonsense.\footnote{The
 proper way to request three hops would be to use WIDE3-3.}
 This demonstrates that users are clearly confused and that a
-major institutional failure occurred in how the meaning of the WIDEn-N alias has
+major institutional failure has occurred in how the meaning of the WIDEn-N alias has
 been presented.
 
 \section{Minimum WIDEn-N Behavior}
 
-APRS digipeaters are divided into two classes; high-level digipeaters and
+APRS digipeaters are divided into two classes: high-level digipeaters and
 low-level digipeaters, which dictates variations in their behavior.
 High-level digipeaters form the major backbone of the APRS digipeater network
 and are generally installed on the tops of mountains,
@@ -288,11 +375,12 @@ Some of these variations include:
 	\item Should digipeaters replace used aliases with their callsign, and
 		how should the last hop of multi-hop aliases be handled?\footnote{i.e.
 		should ``WIDE3-1" become ``DIGIA*" or ``DIGIA*,WIDE3*"?}
-	\item Preemptive digipeating, where digipeaters don't only consider the
-		first unused alias, but continues to search the entire path
-		until a match is found, and marks every skipped alias as used as well.
+	\item Preemptive digipeating, where digipeaters consider all
+		unused aliases, instead of only the first,
+		and possibly consumes multiple hop requests if an alias match is
+		found later in the path.
 	\item Long path traps, where abusive WIDE paths such as WIDE7-7 are trapped
-		and all or many requested hops are consumed by the first digipeater
+		and all or many requested hops are consumed by the first digipeater,
 		to prevent flooding extremely large areas.
 	\item Direct-only digipeaters, where low-level digipeaters don't only respond
 		to WIDE1-1, but only digipeat packets when they appear to have not

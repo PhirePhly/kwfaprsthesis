@@ -1,45 +1,57 @@
 \chapter{APRS RF Channel Capacity}
 \label{chap:channelcapacity}
 
-One of the largest limitations of the APRS network is the fact that it primarily operates
-on a single regional 1200 bits per second data channel. 
+One of the largest limitations of the APRS network is the fact that
+it primarily operates on a single regional 1200 bits per second data channel. 
 Individual nodes share the 1200bps channel using 
-CSMA as discussed in section~\ref{sec:bell202csma}, but the relationship between 
-these channel access methods and how often a station should beacon isn't straight-forward.
+CSMA, as discussed in section~\ref{sec:bell202csma}, but the relationship between 
+these channel access methods and
+how often a station should beacon isn't straight-forward.
 
-The APRS specification fails to give concrete guidance on what beacon interval should
+The APRS specification avoids giving concrete guidance on what beacon interval should
 be used beyond stating that every station should beacon at the net's cycle rate,
 which it lists as 10 minutes locally and 30 minutes 
-network wide\cite[p.~9]{aprsspec}.\footnote{see proportional pathing in the previous section}
+network wide\cite[p.~9]{aprsspec}.\footnote{see proportional
+pathing in the previous section}
 For fixed nodes such as weather stations and network infrastructure, 
-these intervals are appropriate, but mobile users find this beacon interval unsatisfying
-and not useful.
-There is a common desire to beacon more often than every 10 minutes,
-as shown by the wide deployment of SmartBeaconing,
-but how often is allowable while staying within the limitations of the network?
+these intervals are appropriate since their information for the network
+is unlikely to dramatically change in the ten to 30 minute time scale.
+Mobile users are a different story,
+since they often have new information for the network
+such as a direction change or a new text message.
+Fixed ten minute beacon intervals are therefore often unsatisfactory for
+mobile users, who would like to see new information passed to the rest of
+the network more quickly.
+The popularity of SmartBeaconing is a testament to this desire to beacon more often,
+but the question now becomes how much more often can stations beacon while
+staying within the limitations of the APRS network?
 
-This chapter will give an introduction to the original ALOHAnet research that networks like
-APRS are based on, and point out how these models fall short of the actual APRS network,
-but a comprehensive study of the specifics as applied to APRS are beyond
-the scope and resources of this work.
+This chapter will give an introduction to the original ALOHAnet research
+that networks like APRS are based on,
+and point out how these models fall short of the actual APRS network.
+A comprehensive study of the specifics as applied to APRS are beyond
+the scope and resources of this work, so no concrete recommendations will be
+made in this chapter.
 
 \section{Network Capacity Objectives}
 
-The stated objective of APRS is to pass real-time tactical information among a station's
-60 closest peers.
+The stated objective of APRS is to
+pass real-time tactical information among a station's 60 closest peers.
 This value was apparently selected arbitrarily based on the feeling that
 it is unlikely that a station would need to interact with anyone beyond their 60
 closest peers, but will nevertheless be used for the analysis in this chapter.
 This does complicate analysis of the APRS network since each station's set of
 their 60 nearest peers, which is referred to as their ``Aloha Circle,"
-is a different subset of all the stations in the network;
-every station has a different point of view as to who is in their aloha circle and who
+is a different subset of all the stations in the network.
+Every station has a different concept as to who is in their Aloha Circle and who
 is not.
-Analysis is further complicated by the fact that few APRS stations are actually within
-radio range of 60 other stations, so often a significant portion of an aloha circle is
-beyond the local horizon and relayed through digipeaters.
-This effects a phenomenon call the ``hidden node problem," which impacts
-layer 1 CSMA access, which for the sake of simplicity is ignored in this introduction.
+Analysis is further complicated by
+the fact that few APRS stations are actually within radio range of 60 other stations,
+so often a significant portion of an aloha circle is
+beyond the local horizon and relayed through a limited number of digipeaters.
+This effects a phenomenon called the ``hidden node problem," which impacts
+Layer 1 CSMA access,
+which is ignored in the limited scope of this chapter.
 
 An appropriate starting point for analyzing APRS channel capacity would be the original methods
 developed for the ALOHA System at the University of Hawaii\cite{packetthroughput}.
@@ -54,34 +66,44 @@ The most basic analysis of a channel's ALOHA capacity can be based on the assump
 each packet is the same length, 
 that traffic enters the network as a Poisson process,
 and that any collision between two packets causes both of them to fail to be delivered.
-Defining the rate of packets entering the network as $\lambda$ in packets per second and
-the length of each packet as $\tau$ in seconds, the normalized channel traffic G can be
+Defining the rate of packets entering the network as $\lambda$ packets per second and
+the length of each packet as $\tau$ seconds,
+the normalized channel traffic G can be
 calculated as
 \begin{equation}
 	G = \lambda \tau
 \end{equation}
-This normalized value is measured in units of Erlangs,
-which indicate what fraction of a channel would be needed for all
+This normalized channel traffic metric is expressed
+using the dimensionless unit Erlang named after the engineer who originally
+developed the field of queuing theory as applied to the telephone network.
+Erlangs expres the fraction of a channel that would be needed for all
 of the traffic entering the network.
 For example, a value $G=1.0$ would indicate that
-a single station would need to transmit packets continuously, where $G=0.5$ indicates 
-a free channel half the time.
-Erlang values above one are valid, and simply represent that multiple separate
-channels would be needed to handle all of the traffic.
+a single station would need to transmit packets continuously,
+where $G=0.5$ indicates that the channel is idle half of the time.
+Erlang values above one are valid, and simply represent that more than one
+channel would be required to handle all of the traffic.
 
-Unfortunately, when channel access is stochastic,
-there is no guarantee that two stations won't transmit at the same time.
-Any packet transmission starting less than $\tau$ seconds before or after another would
-cause a collision and both packets would be lost.
-This indicates that the rate of successfully received packets exiting the network may
-be lower than $\lambda$, and is traditionally notated as $\lambda'$. 
+When channel access is stochastic, as it is in APRS,
+there is no guarantee that two stations won't transmit at the same time,
+regardless of how much traffic there is on the network.
+Any packet transmission starting less than $\tau$ seconds
+before or after another would
+cause a collision and simple models dictate that both packets would be lost.
+This indicates that the rate of successfully received packets exiting the network
+is often less than $\lambda$, and is traditionally notated as $\lambda'$. 
 Since $\lambda' \leq \lambda$, we define the normalized channel throughput S as
 \begin{equation}
 	S = \lambda' \tau
 \end{equation}
-Due to the assumption that the channel access is Poisson, 
-the probability that a packet will collide with another is $e^{-2 \lambda \tau}$,
-which therefore yields the relationship between S and G of
+This implies that the fraction of the channel capacity used for successfully
+delivered packets must follow the same relationship as $\lambda$ and $\lambda'$,
+namely that $S \leq G$.
+
+Making the assumption that channel access is Poisson in nature, 
+the probability that a packet will collide with another can be derived to
+be  $e^{-2 \lambda \tau}$, as originally derived by Abramson \cite{packetthroughput}.
+This yields the relationship between S and G of
 \begin{equation}
 	S = G e ^ {-2 G}
 \end{equation}
@@ -125,7 +147,7 @@ of \emph{2 minutes 13 seconds}.\footnote{For the reader skimming this chapter, D
 	use this beacon interval for APRS; this Poisson model is too simplified to give
 meaningful results. A suggested default is 600 second intervals when beaconing.}
 The less satisfying result is the fact that only 10 of these packets every minute will be
-successful received, which indicates that
+successfully received, which indicates that
 two thirds of the transmitted power is wasted.
 
 The next section will go into how this Poisson model is deficient to the
@@ -142,27 +164,33 @@ that APRS could allow a user to discover 60 other stations would be much more su
 \section{Deficiencies of the Poisson Model}
 
 There were several assumptions made to simplify the just-presented model 
-for an ALOHA channel that are not particularly valid 
-when applied to a typical APRS network. 
+for an ALOHA channel that are not valid when applied to a typical APRS network. 
 While most of these assumptions indicate that the result of
 equation \ref{equ:aprsmaxrate} is overly optimistic and 
-stations should beacon less often, there are enough different mechanisms at play
+stations should beacon less often, there are enough conflicting mechanisms at play
 in both directions that the true traffic versus throughput relationship 
-is not easily found and requires further work beyond this paper.
-Some of the ignored issues include:
+does not appear to be easily found and requires further work beyond this paper.
+Some of the issues ignored in this chapter include:
 
 \begin{itemize}
 	\item Differences in packet length -- Actual APRS traffic varies in length,
 		which has an effect on throughput rates by changing $\tau$.
-		Abramson considered the general
-		case for two discrete packet lengths \cite{packetthroughput},
-		but in general this encourages users to make packets as short as possible
-		to improve throughput.
+		Abramson presented a closed solution for the
+		case of two discrete packet lengths \cite{packetthroughput},
+		but his methods don't lend themselves well to the broad distribution
+		of packet lengths found in APRS.
+		His solution does imply that users should attempt to 
+		make packets as short as possible to improve throughput.
 	\item Digipeaters and channel access methods -- The presented model assumes that
 		every packet is added to the channel as an entirely blind shot in the dark,
 		but many APRS stations use CSMA to avoid transmitting on already busy channels.
 		This reduces the window for destructive collisions and thus reduces the ratio
 		between the channel traffic G and the usable throughput S.
+	\item FM capture effect -- This model assumed that any overlap between
+		packets is fatal for both packets, but experience shows that packets
+		from closer stations often ``beat out" overlapping packets from stations
+		much further away. This effect has not been quantified as it pertains to
+		APRS.
 	\item Sources of entropy in the network -- Starting with a Poisson stochastic model
 		implies a strong assumption that every packet starts at a random time independent
 		of every other packet. Many APRS stations beacon on a fixed interval,

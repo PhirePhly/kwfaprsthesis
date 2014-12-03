@@ -1,15 +1,15 @@
 \chapter{Node Beaconing Behavior}
 
-Due to the fact that APRS is a source-routed protocol, most of the decisions as
+Since APRS is a source-routed protocol, most of the decisions as
 to how often a station should send traffic and how far that traffic should
-travel are allowed to be made by that originating station. 
+travel are allowed to be made by the originating station. 
 The existing specification for the protocol hardly touches on this issue, 
 while a great deal of time and energy is spent on the development forums 
 bemoaning specific examples of misbehaving members of the network.
 The two major parameters under the source node's control that are considered
 here are the frequency of beaconing and the routing path used for each beacon.
 
-Being a source-routed protocol does fundamentally introduces a
+Being a source-routed protocol does fundamentally introduce a
 moral hazard in the network. For each node in the network to enjoy the
 most benefit from the network, they would want to beacon as often as possible 
 with the longest path allowed by the network.
@@ -30,7 +30,7 @@ serve the local network and should be transmitted. This is rarely a trivial
 decision, and one that could warrant much more creative and application or data
 specific solutions than the ones presented here, which should be considered 
 the typical minimum of most popular APRS trackers. The only datum considered 
-in this paper is that of a mobile node's position, but these algorithms would
+in this work is that of a mobile node's position, but these algorithms would
 likely extend to most other user applications of APRS.
 
 \subsection{Fixed Interval Beaconing}
@@ -46,12 +46,13 @@ While simple, this algorithm does suffer from a number of inadequacies:
 since the previous beacon, without considering any other information available
 to the tracker. Examples of additional information would include whether the 
 tracker has moved, how fast the tracker is moving, or any packets received from
-the APRS network since the last beacon
+the APRS network since the last beacon.
 \item A single fixed interval limits the amount of entropy introduced into the
 network with regards to inter-packet arrival at other nodes. Since APRS is a 
 CSMA shared channel network, it's tempting to use Poisson distribution models
 for network capacity, which is likely invalid when the only source of entropy 
 per tracker is the time when it was last turned on or gained GPS lock.
+This is discussed further in the next chapter.
 \end{itemize}
 
 There are of course several possible extensions to the fixed interval beaconing
@@ -70,31 +71,33 @@ coordination do exist, such as special events and insular networks.
 Time slotting introduces a new parameter called the slot time, and depends on every
 tracker using it having synchronized real time clocks, which is reasonable since most
 GPS receivers provide real time to within typically 200ms of UTC 
-as part of their position reports
-\footnote{The 200ms uncertainty is a typical value due to the delivery of time over
+as part of their position reports.\footnote{The 200ms 
+	uncertainty is a typical value due to the delivery of time over
 an asynchronous 4800 baud serial port. Internally, GPS receivers must maintain 
 their real time clocks to several orders of magnitude higher precision than this
-to be even remotely useful, but this precision isn't needed for APRS time slotting}.
+to be even remotely useful, but this precision isn't needed for APRS time slotting.}
 
 The slot time determines how many seconds after the beginning of each interval
 a tracker should beacon. The beginning of each interval is defined by the top of
-the UTC hour\footnote{Specifying to use UTC time is remarkably 
+the UTC hour,\footnote{Specifying to use UTC time is remarkably 
 	important, since UTC and GPS time have currently diverged by 16 seconds due to
 	only UTC including leap seconds. Most, but not all, GPS receivers correctly
 	compensate for this variable offset and report correct UTC time in their
-GPRMC sentences}, and intervals run successively for the remainder of the hour.
+GPRMC sentences.} and intervals run successively for the remainder of the hour.
 For example, a tracker configured to time slot with an interval of 550 seconds and
 a time slot of 12 would beacon at the following times:
-\begin{itemize}
-\item 00:00:12
-\item 00:09:22
-\item 00:18:32
-\item 00:27:42
-\item 00:36:52
-\item 00:46:02
-\item 00:55:12
-\item 01:00:12
-\end{itemize}
+\begin{tabular}{|c|c|}
+	\hline
+	Time & Calculated by \\ \hline
+	00:00:12 & 0*550 + 12 \\ \hline
+	00:09:22 & 1*550 + 12 \\ \hline
+	00:18:32 & 2*550 + 12 \\ \hline
+	00:27:42 & 3*550 + 12 \\ \hline
+	00:36:52 & 4*550 + 12 \\ \hline
+	00:46:02 & 5*550 + 12 \\ \hline
+	00:55:12 & 6*550 + 12 \\ \hline
+	01:00:12 & 0*550 + 12 \\ \hline
+\end{tabular}
 
 This deterministic beaconing algorithm allows carefully designed networks to 
 over-subscribe network throughput well beyond the levels expected from 
@@ -202,32 +205,39 @@ As discussed in chapter~\ref{chap:channelcapacity}, calculating the
 actual channel capacity in an area and the appropriate beaconing interval
 for any of these algorithms are not at all straight forward.
 
-\begin{itemize}
-	\item low\_speed = 5 mph. This is the speed below which the tracker
+\begin{table}
+	\centering
+	\begin{tabular}{|r|l|p{8cm}|}
+		\hline
+		Parameter Name & Value & Description \\ \hline
+		low\_speed & 5 mph & This is the speed below which the tracker
 		switches to the slow\_beacon\_interval 
-		and no longer performs corner pegging.
-	\item slow\_beacon\_interval = 1800 seconds. This is how often a tracker
+		and no longer performs corner pegging. \\ \hline
+		slow\_beacon\_interval & 1800 seconds & This is how often a tracker
 		should beacon when it is moving slower than low\_speed, which indicates
-		that it is essentially stopped.
-	\item high\_speed = 60 mph. High speed is the value that slower speed
+		that it is essentially stopped. \\ \hline
+		high\_speed & 60 mph & High speed is the value that slower speed
 		beacon intervals are interpolated from. Speeds faster than high\_speed
-		are valid but simply beacon at fast\_beacon\_interval.
-	\item fast\_beacon\_interval = 180 seconds. This is how often a tracker should
+		are valid but simply beacon at fast\_beacon\_interval. \\ \hline
+		fast\_beacon\_interval & 180 seconds & This is how often a tracker should
 		beacon when traveling at high\_speed and the scalar used to 
-		calculate beacon intervals at lower speeds as a fraction of high\_speed.
-	\item turn\_minimum = 30 degrees. The absolute minimum heading change needed 
+		calculate beacon intervals at lower speeds as a fraction of high\_speed. \\ \hline
+		turn\_minimum & 30\textdegree & The absolute minimum heading change needed 
 		to trigger
-		a ``corner peg" where the tracker beacons sooner than its speed warrants.
-	\item turn\_slope = 255 degree miles per hour. 
+		a ``corner peg" where the tracker beacons sooner than its speed warrants. \\ \hline
+		turn\_slope & 255\textdegree miles / hr &
 		A scalar to convert between how fast a tracker is going and 
 		how tight of a turn they need to perform to trigger a corner peg.
 		The original documentation notes this value as unitless,
 		which isn't entirely invalid since degree miles per hour isn't 
-		a particularly helpful dimension.
-	\item turn\_beacon\_interval = 15 seconds. The maximum beacon rate allowed 
-		when a tracker is changing heading often.
-	
-\end{itemize}
+		a particularly helpful dimension. \\ \hline
+		turn\_beacon\_interval & 15 seconds & The minimum time between beacons 
+		when a tracker is changing heading often. \\ \hline
+
+	\end{tabular}
+	\caption{Suggested defaults for SmartBeaconing parameters}
+	\label{tab:smartbeaconparams}
+\end{table}
 
 The original HamHUD algorithm is documented online as a snippet of C-like 
 pseudo-code as shown in figure~\ref{fig:hamhudsmartbeacon}.
@@ -244,7 +254,7 @@ have possibly harmed deployment of the SmartBeaconing algorithm on other tracker
 		slow\_rate is used for the beacon interval when the vehicle is stopped, 
 		fast\_beacon\_rate for when the vehicle is moving,
 		and turn\_time for when it is turning.
-		A better set of variable names would be *\_beacon\_interval.
+		A better set of variable names could be *\_beacon\_interval.
 	\item The corner pegging algorithm suffers from an off-by-one error due to
 		the final if statement being a $>$ comparison instead
 		of a $\geq$ comparison. As documented, turning a corner would
@@ -291,7 +301,7 @@ ELSE {
 IF (secs_since_beacon> beacon_rate)
 	// ... send beacon
 \end{lstlisting}
-\caption{HamHUD SmartBeaconing Algorithm Documentation}
+\caption{Original HamHUD SmartBeaconing documentation using C-like syntax}
 \label{fig:hamhudsmartbeacon}
 \end{figure}
 
@@ -327,7 +337,7 @@ IF (secs_since_beacon> beacon_rate)
 	%\Comment{Check if enough time has elapsed to send a new beacon}
 \EndIf
 \end{algorithmic}
-\caption{Revised presentation of SmartBeaconing by the author}
+\caption{Novel presentation of SmartBeaconing algorithm by the author}
 \label{fig:kwfsmartbeacon}
 \end{figure}
 
@@ -361,7 +371,7 @@ them reaching the high-level digipeater network on their first hop.
 Vehicles which stay in highly populated areas should consider using the
 shorter ``WIDE1-1" path, while vehicles which do the opposite and spend
 a significant amount
-of their time in unusually sparse areas 
+of their time in areas with unusually sparse APRS coverage 
 may use ``WIDE1-1,WIDE2-2." \cite{infoaprspath}
 
 \subsection{Fixed Stations}
@@ -379,12 +389,13 @@ options depending on how many hops are needed:
 	\item WIDE2-2 - The most standard path that stations should only
 		deviate from after careful consideration.
 	\item WIDE3-3 - Should only be used in mountainous or spare areas for
-		traffic important to a large number of stations. Almost no 
+		traffic important to a large number of stations. Very few
 		stations should ever use this path.
 \end{itemize}
 
-Fixed stations also enjoy the advantage that they do not need to handle a
-constantly changing APRS infrastructure as vehicles do.
+Unlike mobile trackers,
+fixed stations enjoy the advantage that they do not need to handle a
+constantly changing APRS infrastructure.
 Instead of using the APRS WIDE aliases, fixed stations should seriously
 consider using literal paths consisting of specific digipeater callsigns.
 For example, a fixed station desiring a single hop through the near-by
@@ -393,7 +404,7 @@ This causes only the HIGHA digipeater to repeat the packet and not involve
 any further away or lower-level digipeaters which happen to also decode the
 initial transmission. 
 Literal paths requesting the help of specific digipeaters is rarely
-seen in APRS traffic, and should be better encouraged.
+seen in APRS traffic, but should be encouraged.
 
 Fixed stations should also consider using ``proportional pathing,"
 which warrants its own section below.
@@ -430,7 +441,7 @@ more often.
 This can be accomplished by modulating the number of requested hops per beacon,
 such that not every packet takes multiple hops, but some do.
 
-The most common example of where proportional pathing should be applied is
+A common example of where proportional pathing should be applied is
 low level digipeaters.
 A typical low-level digipeater beacons its location every ten minutes with
 a path of ``WIDE2-1."
@@ -446,14 +457,21 @@ is still online every ten minutes.
 Proportional pathing suggests that instead of transmitting every packet with
 a path of WIDE2-1, a low-level digipeater could produce less traffic on the
 APRS network by alternating between paths as follows:
-\begin{itemize}
-	\item 0:00 ``~"
-	\item 0:10 ``~"
-	\item 0:20 ``WIDE2-1"
-	\item 0:30 ``~"
-	\item 0:40 ``~"
-	\item 0:50 ``WIDE2-2"
-\end{itemize}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ | r | l |}
+		\hline
+		Time & Path \\ \hline
+		0:00 & ``~" \\ \hline
+		0:10 & ``~" \\ \hline
+		0:20 & ``WIDE2-1" \\ \hline
+		0:30 & ``~" \\ \hline
+		0:40 & ``~" \\ \hline
+		0:50 & ``WIDE2-2" \\ \hline
+	\end{tabular}
+	\caption{Example of Proportional Pathing}
+	\label{tab:exproppath}
+\end{table}
 
 At the top of the hour, 10 minutes after, 30 after, and 40 after, 
 this low-level digipeater
@@ -465,7 +483,7 @@ This enables the digipeater to beacon every ten minutes locally,
 but stations further away only have to handle its traffic once or twice an hour
 while still being able to see it periodically.
 The digipeater is therefore still highly visible locally, but generates
-much less traffic on the high-level backbone digipeaters for its
+much less traffic on the high-level backbone digipeaters and further away from its
 longer-range advertisements.\footnote{It's important
 	to note that although the example shows every beacon at the beginning of
 	every ten minutes, an actual deployment should select a random off-set
@@ -475,7 +493,7 @@ from happening once every ten minutes when every digi simultaneously beacons.}
 This example considered the most common form of proportional pathing,
 where the tracker maintains a finite state machine to switch between
 a limited and predefined list of paths,
-but a possible area for future work would be developing more sophisticated
+but a possible area for future work would be to develop more sophisticated
 proportional pathing algorithms.
 Much like the SmartBeaconing algorithm considered earlier,
 heuristics could be developed to categorize how important the next beacon
@@ -490,13 +508,13 @@ used to determine when a tracker should beacon, and provided some
 general guidance on what routing paths should be used by different types
 of trackers.
 The source-routed nature of APRS is often considered a double-edge sword,
-since any operator may join any APRS network and tailor how the network
-handles the local station's traffic to meet their own needs.
+since any operator may tailor how the network
+handles the local station's traffic to meet their own need.
 The downside to source-routing is that malicious or ignorant stations
-are empowered to cause a tremendous amount of harm to the network's performance
-by beaconing too often or with too long of a path,
-so careful consideration and user education is particularly important for
-a successful APRS network.
+are empowered to cause a tremendous amount of harm to the network's performance.
+There are inevitable exceptions to the guidance given in this chapter,
+so modifications to any defaults should be done with careful consideration
+and user education.
 
 The guidance given has been as general as possible,
 without documenting the numerous edge cases and exceptions in individual areas.
