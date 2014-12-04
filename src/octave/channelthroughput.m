@@ -7,8 +7,9 @@ figure(1);
 g = [0:0.01:2];
 s = g .* e .^ (-2 * g);
 plot(g,s);
-xlabel('G, channel traffic');
-ylabel('S, channel throughput');
+xlabel('G, channel traffic [Erlang]');
+ylabel('S, channel throughput [Erlang]');
+grid on;
 
 print('poissonthroughput.eps');
 
@@ -18,8 +19,9 @@ hold on;
 sslot = g .* e .^ (-g);
 plot(g,s,'b');
 plot(g,sslot, 'r');
-xlabel('G, channel traffic');
-ylabel('S, channel throughput');
+xlabel('G, channel traffic [Erlang]');
+ylabel('S, channel throughput [Erlang]');
+grid on;
 
 print('slottedthroughput.eps');
 
