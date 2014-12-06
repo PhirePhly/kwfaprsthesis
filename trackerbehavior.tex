@@ -133,24 +133,13 @@ as will be discussed in chapter \ref{chap:channelcapacity},
 but an important note for tracker behavior is the fact that fixed interval
 beaconing introduces no new entropy once a tracker is activated and beaconing.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\textwidth]{src/slorfarrival}
-	\caption{Packet arrival time spacing as measured over 10 days
-	in San Luis Obispo, CA - TODO make better plot}
-	\label{fig:rfarrivaldist}
-\end{figure}
-
-While there is no quantitative models measuring how far the current APRS 
-network traffic deviates from a Poisson process, 
-or how much this impacts network throughput,
-observing the peaks at round numbers such as 60 and 120 second intervals
-in plots such as figure \ref{fig:rfarrivaldist} indicate that the Poisson
-assumption is not entirely valid.
-Justifying the Poisson traffic model can be bolstered by trackers 
-implementing what is called
-dithering, where a small amount of noise is deliberately introduced on top
-of the highly quantized beacon interval.
+Since APRS channel access is often a stocastic process,
+it is possible that introducing more sources of entropy into
+how often trackers beacon will improve network performance overall.
+Deliberately introducing a small amount of noise into the interval between
+beacons is called dithering,
+and has been known to improve system performance
+in other fields such as computer graphics \cite{robertsdither}.
 
 \begin{figure}
 \begin{algorithmic}
@@ -165,7 +154,7 @@ of the highly quantized beacon interval.
 \label{fig:ditheringalg}
 \end{figure}
 
-Developing analytic justifications for selecting specific distributions
+Developing analytic justifications for dithering or selecting specific distributions
 are beyond the scope of this work, but it's theorized that introducing
 any kind of entropy with approximately 1\% variance could improve network
 traffic distribution.
