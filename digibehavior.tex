@@ -92,13 +92,20 @@ packet moving through the network requesting WIDE digipeater service.
 
 \section{Examples}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\textwidth]{src/dia/pathdemo}
+	\caption{APRS network used for path routing examples}
+	\label{fig:pathdemo}
+\end{figure}
+
 As an example, consider a small APRS network with one tracker and three
-digipeaters: TRACKR, LOWDIG, HIGHA, and HIGHB.
+digipeaters as shown in figure \ref{fig:pathdemo}: TRACKR, LOWDIG, HIGHA, and HIGHB.
 TRACKR is an APRS tracker originating all of the packets in these examples.
 LOWDIG is a low level digipeater that only responds to the RELAY alias, 
 where HIGHA and HIGHB are both high-level digis and thus respond to
 both RELAY and WIDE.
-Consider the following sequences of routing paths:
+Consider the routing path sequence in table \ref{tab:singlewide}.
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{ | l | l | }
@@ -119,14 +126,17 @@ This notation for the H bit comes from the monitor mode
 of the TAPR TNC2, which has become the de-facto standard way to represent
 APRS packets textually, such as in log files, documentation, and the
 TCP/IP based APRS Internet System backbone.
-The TAPR TNC2 also defined the convention to drop the -0 SSID.
+The TAPR TNC2 also defined the convention to drop the -0 SSID so TRACKR-0 is
+written as simply TRACKR.
 
 The ``---" is used in Table \ref{tab:singlewide} to represent that WIDEB does not
-repeater this beacon.
+repeat this beacon.
 It receives the repeated packet from WIDEA, but there are no un-consumed
-hops remaining in the path, so the packet is dropped.
+hops remaining in the path, so the packet is dropped and no one on the other
+side of WIDEB would hear this packet.
 
-To reach further out in the network, the user would append additional WIDE statements to their path:
+To reach further out in the network, the user would use a WIDE statement requesting
+more than one hop:
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{ | l | l | }
@@ -158,7 +168,8 @@ but does reach a low-level one, a WIDE path would do them no good:
 Table \ref{tab:lowhearswide} shows that LOWDIG drops the packet since
 TRACKR only requests hops from WIDE digipeaters.
 Therefore, stations that expect to often be depending on low-level
-digipeaters should begin their path with a RELAY alias.
+digipeaters should begin their path with a RELAY alias
+as shown in table \ref{tab:lowusingrelay}.
 
 \begin{table}[!h]
 	\centering
@@ -170,7 +181,7 @@ digipeaters should begin their path with a RELAY alias.
 		RELAY*,WIDE1* & HIGHA \\ \hline
 	\end{tabular}
 	\caption{TRACKR using LOWDIG to reach HIGHA}
-	\label{tab:usingrelay}
+	\label{tab:lowusingrelay}
 \end{table}
 
 Table \ref{tab:usingrelay} is an instance when it's important that high-level

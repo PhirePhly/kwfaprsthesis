@@ -59,7 +59,7 @@ considered a communications network to an end, but a way to be made aware
 of the other assets in the local area made available to support amateur 
 radio operations.
 
-Due to the fact that APRS is built upon the relatively slow 
+Since APRS is built upon the relatively slow 
 1200bps AX.25 VHF packet
 network and the channel sharing concepts developed for the ALOHAnet at
 the University of Hawaii, the amount of 
@@ -78,16 +78,16 @@ resources beyond the radius of interest for the local operator.
 
 A typical APRS network consists of three types of stations:
 \begin{itemize}
-	\item Trackers - These are mobile radios, often installed in vehicles with
+	\item Trackers - Mobile radios, often installed in vehicles with
 		a GPS receiver, that periodically advertise their physical location
 		along with any additional information including what other frequencies
 		the operator is listening on.
-	\item Digipeaters - These are half-duplex digital repeaters that build the
+	\item Digipeaters (digis) - Half-duplex digital repeaters that build the
 		backbone of an APRS network, allowing stations to interact with other
 		stations beyond their immediate radio range. This is done by immediately
 		repeating any received packets which request being repeated from the
-		digi's higher location.
-	\item I-gates - Internet gateways are stations usually installed in homes
+		digipeater's higher location. 
+	\item Internet gateways (I-gates) - Stations usually installed in homes
 		that act as bridges between the local APRS network on RF and the
 		world-wide APRS-IS (Internet System) network, which uses the Internet
 		to aggregate and route all of the APRS traffic generated in each
@@ -115,14 +115,14 @@ greatly increases their range and usefulness.
 
 \subsection{Station Block Diagrams}
 
-Like most aspects of the APRS network, there are countless options 
-when it comes to assembling an APRS node from the parts on-hand.
+Like most aspects of the APRS network, there are many options 
+when assembling an APRS node.
 This section presents block diagrams for the three most common ways
 to assemble trackers, digipeaters, and I-gates, but additional permutations
 of these and entirely different topologies are possible.
 
 Blocks presented as dotted lines are optional. The ``Transceiver" blocks refer to 
-VHF FM amateur radios. ``Terminal Node Controllers" are the modems and radio
+VHF FM amateur radios. ``Terminal Node Controllers" (TNC) are the modems and radio
 interfaces with minimal embedded intelligence. These blocks and the labeled protocols
 between blocks will be expanded upon in later chapters.
 
@@ -135,7 +135,7 @@ between blocks will be expanded upon in later chapters.
 
 Figure \ref{fig:blocktracker} shows the block diagram for an APRS tracker, 
 which is built around a Terminal Node Controller which parses NEMA positions
-provided by a GPS receiver and convert them into APRS position reports that
+provided by a GPS receiver and converts them into APRS position reports that
 are then frequency shift modulated and sent to a VHF FM voice transceiver using an
 interface cable that includes transmit and receive audio, as well as a line to
 key the ``push to talk" button on the radio to start transmitting.
@@ -148,7 +148,7 @@ key the ``push to talk" button on the radio to start transmitting.
 \end{figure}
 
 Figure \ref{fig:blockdigi} shows the block diagram for a digital repeater, which
-is much the same as for a tracker except that the GPS receiver is often omitted. 
+is similar to a tracker except that the GPS receiver is often omitted. 
 Since the digipeater is always installed in a fixed location, its GPS coordinates
 can be hard-coded into non-volatile memory in the TNC.
 
@@ -159,7 +159,8 @@ can be hard-coded into non-volatile memory in the TNC.
 	\label{fig:blockigate}
 \end{figure}
 
-Figure \ref{fig:blockigate} shows the block diagram for an Internet Gateway, which
+Figure \ref{fig:blockigate} shows the block diagram for
+an Internet Gateway (I-gate), which
 like the digipeater doesn't require a GPS receiver. Unlike the digipeater,
 instead of sending received packets back out through the VHF transceiver,
 I-gates send received packets to the APRS-IS Internet System via a local connection
@@ -173,11 +174,22 @@ stack and work its way up, touching on each layer with an introduction and
 some basic analysis. 
 Ideally, this document would answer all of the ambiguities existing in the
 APRS network protocols, but many of the issues that will be touched upon 
-deserve an entire masters thesis of their own, and therefore will only
-be noted as currently deficient. 
-Any readers still shopping for a thesis subject or senior project should 
-continue reading with bated breath, as this topic is ripe with further 
-work.
+deserve an entire masters thesis of their own, and therefore will often
+be noted as simply deficient before moving on.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{src/dia/osi_full}
+	\caption{The OSI network model as applied to APRS in this paper}
+	\label{fig:osiaprs}
+\end{figure}
+
+The rest of this document will be divided into three parts based on the
+bottom three layers of the Open Systems Interconnection (OSI) model,
+to separately discuse issues found on each of these layers of the APRS network stack.
+Figure \ref{fig:osiaprs} shows how the most popular protocols used on APRS
+will be mapped to the OSI model, including the APRS messaging system which
+will not be further mentioned due to it being a relatively unimportant part of APRS.
 
 Part \ref{part:physical} will cover the Bell 202 modem used to encode APRS on
 the VHF packet channels and the KISS protocol used to connect modems to

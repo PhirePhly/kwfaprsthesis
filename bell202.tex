@@ -1,9 +1,15 @@
 \chapter{Amateur Bell 202}
 \label{chap:bell202}
 
-This chapter considers the most popular modulation used in amateur
-packet radio, Amateur Bell 202. 
-The primary points made will be:
+This chapter considers the most popular modulation used for APRS
+on RF, Amateur Bell 202.
+One of the major features of APRS is that large areas have standardized
+on single VHF packet frequencies using this very-popular Amateur Bell 202 modulation.
+This is what enables APRS tracker to move throughout the United States
+while beaconing on 144.390MHz and always be able to participate in the local
+APRS network.
+Surprisingly, despite its age, this modulation still suffers from much 
+confusion in its documentation, so the primary points made in this chapter will be:
 \begin{itemize}
 	\item Pointing out that what amateur radio operators call ``Bell 202"
 		implicitly extends well beyond the original Bell 202 specification.
@@ -20,14 +26,15 @@ The primary points made will be:
 		to modem performance.
 \end{itemize}
 
-Despite Amateur Bell 202 often being decried for its age and 
+Despite Amateur Bell 202 as it is used in APRS often being decried for its age and 
 vastly outliving its usefulness,
 it can't be denied that it is still an integral part of the amateur radio
 digital communications landscape.
 While its deficiencies dictate that Amateur Bell 202 will rarely be the best
 choice for new packet radio networks, 
 its relative simplicity causes
-Amateur Bell 202 to be an appealing gateway into the digital communications hobby.
+Amateur Bell 202 to be an appealing gateway into APRS and 
+the digital communications hobby.
 
 \section{Bell 202 in Amateur Radio}
 \label{sec:bell202history}
@@ -45,8 +52,8 @@ amateur packet operations in the United States \cite{gatewaypacket}.
 \begin{figure}[!b]
 	\centering
 	\includegraphics[width=0.4\textwidth]{src/dia/osi_bell202}
-	\caption{OSI network layers for APRS. 
-	This paper refers to the entirety of layer 1 as ``Amateur Bell 202"}
+	\caption{This paper refers to the entirety of OSI
+	Layer 1 as ``Amateur Bell 202"}
 	\label{fig:osibell}
 \end{figure}
 
@@ -153,7 +160,7 @@ There are a number of important facets to note:
 		specified in the layer 2 AX.25 network protocol.
 		Larger frames are possible and were often used in specialized 
 		AX.25 and IPv4 packet networks \cite{pattersoninterview}.
-		A practical upper limits on frame size is enforced by
+		A practical upper limit on frame size is enforced by
 		the need for successful frames to be completely error-free.
 
 
@@ -203,6 +210,42 @@ with more desirable properties, such as forward error correction.
 \subsection{Calculating the Frame Check Sum}
 \label{calcfcs}
 
+\begin{figure}
+	\begin{algorithmic}[1]
+		\Function{calculate\_crc}{$frame[~], frame\_length$}
+		\State $crc \gets \texttt{0xFFFF}$
+
+		\ForAll{$byte \gets frame_{0}, frame_{frame\_length-1}$}
+		\ForAll {$bit \gets byte_{LSb}, byte_{MSb}$}
+		\If {$crc_{LSb} \neq bit$}
+			\State $crc \gets (crc \gg 1) \textrm{ XOR } \texttt{0x8408}$
+			%\Comment{Right shift and XOR with bit-reversed polynomial}
+		\Else
+			\State $crc \gets crc \gg 1$
+			%\Comment{Only right shift}
+		\EndIf
+		\EndFor
+		\EndFor
+
+		\State $crc \gets crc \textrm{ XOR } \texttt{0xFFFF}$
+		%\Comment{Take one's complement per ITU-T V.42 \S8.1.1.6.2}
+
+		%\Comment{Swap high and low bytes so crc is in host endian order}
+		\State \textbf{return} $crc$
+		\EndFunction
+	\end{algorithmic}
+	\caption{Algorithm to calculate CRC-16-CCITT in reverse-bit order.}
+	\label{fig:crcccittcode}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\textwidth]{src/dia/bittwisting}
+	\caption{Pathway of frame payload to final bit stream
+	using only a LSb-first modulator}
+	\label{fig:bittwisting}
+\end{figure}
+
 
 The Frame Check Sum (FCS) used for error detection in Amateur Bell 202
 is the well-known CRC-16-CCITT, 
@@ -236,50 +279,26 @@ available reference implementations of the CCITT checksum don't
 make it clear that they already integrate the needed bit reversal 
 after the Cyclic Redundancy Check (CRC) division and one's complement.
 The algorithm presented in Figure \ref{fig:crcccittcode} 
-\emph{does not} calculate the true CCITT CRC checksum, but
+\emph{does not} calculate the true CCITT CRC, but
 follows the convention of
 calculating it in reverse-bit order, such that the final bit-reversal step 
-may be omitted during modulation of the bit stream while using the LSb first
+may be omitted during modulation of the bit stream while using the
+least significant bit (LSb) first
 modulation subroutines already used for the payload data.
 Therefore, the checksum as presented should be sent lower octet first, 
 using the same modulator as for payload octets that modulates the 
-least significant bit (LSb) first.
+LSb-first.
 This ensures that the resulting checksum as transmitted will have the 
 correct sequence, starting with the MSb and finishing with the LSb,
 and is why many implementations appear to completely ignore the
 need to send the FCS MSb.
-Calculating the FCS in reverse bit order and then modulating it in LSb
-is equivalent to originally sending it in MSb order,
-and thus alleviates the need for 
-the modulator to handle the FCS differently than the rest of the frame.
-
-\begin{figure}
-	\begin{algorithmic}[1]
-		\Function{calculate\_crc}{$frame[~], frame\_length$}
-		\State $crc \gets \texttt{0xFFFF}$
-
-		\ForAll{$byte \gets frame_{0}, frame_{frame\_length-1}$}
-		\ForAll {$bit \gets byte_{LSb}, byte_{MSb}$}
-		\If {$crc_{LSb} \neq bit$}
-			\State $crc \gets (crc \gg 1) \textrm{ XOR } \texttt{0x8408}$
-			%\Comment{Right shift and XOR with bit-reversed polynomial}
-		\Else
-			\State $crc \gets crc \gg 1$
-			%\Comment{Only right shift}
-		\EndIf
-		\EndFor
-		\EndFor
-
-		\State $crc \gets crc \textrm{ XOR } \texttt{0xFFFF}$
-		%\Comment{Take one's complement per ITU-T V.42 \S8.1.1.6.2}
-
-		%\Comment{Swap high and low bytes so crc is in host endian order}
-		\State \textbf{return} $crc$
-		\EndFunction
-	\end{algorithmic}
-	\caption{Algorithm to calculate CRC-16-CCITT in reverse-bit order.}
-	\label{fig:crcccittcode}
-\end{figure}
+Figure \ref{fig:bittwisting} demonstrates how
+calculating the FCS in reverse bit order and then feeding it through
+the same LSb-first modulator as the payload octets
+is equivalent to calculating the FCS in canonical bit order and
+using a separate MSb-first modulator.
+This is desirable because it prevents the need for this second
+subroutine to send bits MSb-first to ever be written or maintained.
 
 \section{FM Deviation and Emphasis}
 

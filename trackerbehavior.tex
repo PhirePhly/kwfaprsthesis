@@ -262,7 +262,7 @@ have possibly harmed deployment of the SmartBeaconing algorithm on other tracker
 	\item The corner pegging section changes the value of secs\_since\_beacon
 		instead of beacon\_rate, where secs\_since\_beacon is a system
 		invariant that could possibly be implemented as a macro
-		or in-line function call.
+		or function call.
 	\item The SmartBeaconing documentation specifies that 
 		the velocities used are in units
 		of miles per hour, where velocities expressed in the APRS
@@ -306,7 +306,7 @@ IF (secs_since_beacon> beacon_rate)
 \end{figure}
 
 \begin{figure}[p]
-\begin{algorithmic}
+	\begin{algorithmic}[1]
 \If {$speed < low\_speed$}
 	\State $beacon\_interval\gets slow\_beacon\_interval$
 
@@ -388,7 +388,7 @@ options depending on how many hops are needed:
 		particularly large coverage digipeater.
 	\item WIDE2-2 - The most standard path that stations should only
 		deviate from after careful consideration.
-	\item WIDE3-3 - Should only be used in mountainous or spare areas for
+	\item WIDE3-3 - Should only be used in mountainous or sparse areas for
 		traffic important to a large number of stations. Very few
 		stations should ever use this path.
 \end{itemize}
