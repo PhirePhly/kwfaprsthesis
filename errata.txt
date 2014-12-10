@@ -17,7 +17,7 @@
 * p1 three decades after the inception of PACKET radio
 + p4 Automatic Vehicle Location (AVL)
 + p6 I define trackers as APRS nodes that move. They aren't limited to TX only
-+ p6 them repeating packets
+* p6 them repeating packets
 + I'm ignoring UHF and HF APRS as it isn't the major application
 * NEMA should be NMEA
 * PPT should be PTT
@@ -30,6 +30,8 @@
 + p39 I ignored the KISS bug
 
 + 3.0kHz provides the best SINAD
-+ Unnumbered Information frames
+* Unnumbered Information frames
 + p(57) concrete adviCe
+
++ RF gets into RS-232 cables, which can cause issues.
 
