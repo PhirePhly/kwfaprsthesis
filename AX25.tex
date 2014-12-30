@@ -16,7 +16,7 @@ AX.25 is one of the best-documented protocols used in amateur radio packet netwo
 so it could be argued that a chapter in this thesis considering AX.25 could be omitted.
 The AX.25 specification goes into tremendous detail as to the expected behavior of each
 node and how the system should transition between states.
-Where the documentation does fall short is in how APRS abuses a small subset of 
+Where documentation does fall short is in how APRS abuses a small subset of 
 the AX.25 protocol for the specific needs of the APRS network.
 The rest of the chapter will walk through each field of the AX.25 packet and
 note how it is used by APRS, followed by a discussion of the implications of the FCC
@@ -42,7 +42,7 @@ by APRS.
 
 Traditional AX.25 traffic is usually directed at a single station, which would be indicated by 
 a packet's destination address. 
-Since APRS is strictly a one-to-many network protocol at layer 3, this field
+Since APRS is strictly a one-to-many network protocol at Layer 3, this field
 was deemed not needed for APRS and several alternative uses for the field have been proposed.
 
 The most popular application for this field is to be used as a tracker identifier, where a
@@ -63,7 +63,7 @@ additional SSID appended to the station, which may range from zero to 15. Source
 be at least three characters long, and may not be any longer than six. Stations using AX.25 
 over RF are limited to the SSID's of 0 to 15 due to AX.25's binary format, 
 while APRS imposes a looser standard such that the SSID is only limited to 
-two alphanumeric characters.
+two alphanumeric characters when not transported over AX.25 links..
 
 \subsection{Routing Path}
 \label{subsec:ax25RoutingPath}
@@ -87,8 +87,9 @@ Higher layer protocols can recover from a lost packet locally
 without needing to twice consume
 the bandwidth used to get the packet to the digipeater.
 
-This concept of higher-layer retries and limited digipeater use is ignored by APRS.
-More than two digipeater fields are often seen on APRS traffic, 
+This concept of higher-layer retries and a limit of two digipeaters
+introduced in AX.25 v2.2 is ignored by APRS.
+More than two digipeaters are often seen on APRS traffic, 
 and users are only strongly discouraged from using a large number of hops.
 
 \subsection{Control Flags}
@@ -101,9 +102,9 @@ contain the value 0x03.
 
 The Protocol IDentifier (PID) field is normally used to identify the Layer 3 protocol
 being transported by AX.25. TAPR has reportedly stopped processing requests for new PID
-values to be issued to new layer 3 applications of AX.25 \cite{millernopid}, 
+values to be issued to new Layer 3 applications of AX.25 \cite{millernopid}, 
 which is a possible explanation for why APRS doesn't have a unique PID.
-It instead uses the value of 0xF0, incorrectly indicating that no layer 3 protocol is in use.
+It instead uses the value of 0xF0, incorrectly indicating that no Layer 3 protocol is in use.
 
 \subsection{Information Field}
 

@@ -157,7 +157,7 @@ There are a number of important facets to note:
 	\item The minimum and maximum payload sizes indicated in Figure 
 		\ref{fig:bell202format} aren't enforced by any properties of 
 		Bell 202 or HDLC, but from the Maximum Transmission Unit (MTU)
-		specified in the layer 2 AX.25 network protocol.
+		specified in the Layer 2 AX.25 network protocol.
 		Larger frames are possible and were often used in specialized 
 		AX.25 and IPv4 packet networks \cite{pattersoninterview}.
 		A practical upper limit on frame size is enforced by
@@ -171,16 +171,16 @@ There are a number of important facets to note:
 It is important to note that the presentation of the HDLC framing
 and checksum
 in Figure \ref{fig:bell202format} as part of the Layer 1 modulation 
-instead of as part of the layer 2 AX.25 frame is 
+instead of as part of the Layer 2 AX.25 frame is 
 novel to this work and hasn't been seen in any of the existing literature.
 This classification isn't consistent with the traditional OSI model,
 but the author's main objective is to decouple HDLC from AX.25.
 This change is suggested because including the frame checksum and flags
-in the layer 2 documentation confuses the separation between Amateur Bell 202 
+in the Layer 2 documentation confuses the separation between Amateur Bell 202 
 and AX.25, which should be independent protocols.
 
 This is particularly important when AX.25 packets are transported across 
-other layer 1 links which use their own framing protocols.
+other Layer 1 links which use their own framing protocols.
 The Keep It Simple Stupid (KISS) serial link between 
 a host system and modem is the most notable
 transport where the HDLC fields are not included in outgoing frames, 
@@ -193,8 +193,8 @@ M. Chepponis and P. Karn made the technically correct decision of excluding
 HDLC framing from the AX.25 payload when developing KISS, but this causes
 an unfortunate situation where KISS is transporting an entirely
 undocumented fragment of the AX.25 packet. Figure \ref{fig:ax25format} 
-presents the AX.25 layer 2 protocol as it should be documented without
-the layer 1 HDLC framing.
+presents the AX.25 Layer 2 protocol as it should be documented without
+the Layer 1 HDLC framing.
 
 Removing HDLC from AX.25 also permits any researchers developing new
 amateur radio packet modems to select a different framing protocol

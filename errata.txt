@@ -33,3 +33,5 @@
 * Unnumbered Information frames
 * p(57) concrete adviCe
 
++ RF gets into RS-232 cables, which can cause issues.
+
