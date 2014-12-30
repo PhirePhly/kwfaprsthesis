@@ -1,28 +1,28 @@
-+ Bell202 chosen due to availability of modem chipsets
+* Bell202 chosen due to availability of modem chipsets
 + TNC do not traditionally include APRS capability
-+ ch 5 p29 FCC-issued
-+ 10 minute ID during an exchange
-+ p40 - make it clear previous two years
+* ch 5 p29 FCC-issued
+* 10 minute ID during an exchange
+* p40 - make it clear previous two years
 + plural of errata is erratum
 + p56 - FCC beacons not required
-+ footnote 4 offset is not hyphenated
-+ s7.3 last graf advise - advice
-+ p58 ch8 first graf straight forward not hyphened
-+ don't spell out ten
-+ sec 8.1 - 60 nearest peers
-+ Cap of ALOHA inconsistent
-+ p60 Erlangs expresS 
-+  Erlangs above 1.0
+* footnote 4 offset is not hyphenated
+* s7.3 last graf advise - advice
+* p58 ch8 first graf straight forward not hyphened
+* don't spell out ten
+* sec 8.1 - 60 nearest peers
+* Cap of ALOHA inconsistent
+* p60 Erlangs expresS 
+*  Erlangs above 1.0
 
 * p1 three decades after the inception of PACKET radio
-+ p4 Automatic Vehicle Location (AVL)
-+ p6 I define trackers as APRS nodes that move. They aren't limited to TX only
-+ p6 them repeating packets
+* p4 Automatic Vehicle Location (AVL)
+* p6 I define trackers as APRS nodes that move. They aren't limited to TX only
+* p6 them repeating packets
 + I'm ignoring UHF and HF APRS as it isn't the major application
 * NEMA should be NMEA
 * PPT should be PTT
 + Block diagrams are mirrored
-+ p20 Term should be "tone skew"
+* p20 Term should be "tone skew"
 + p20 I'm refering to a new parametric test suite, not just WA8LMF
 + p20 preemphasis wasn't historically just for SNR reasons
 + p20 Collisions aren't entirely fatal
@@ -30,6 +30,6 @@
 + p39 I ignored the KISS bug
 
 + 3.0kHz provides the best SINAD
-+ Unnumbered Information frames
-+ p(57) concrete adviCe
+* Unnumbered Information frames
+* p(57) concrete adviCe
 

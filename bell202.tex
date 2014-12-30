@@ -46,7 +46,7 @@ These tones represent a binary one and zero respectively and transitions occur
 at a rate of 1200 symbols per second.
 Originally developed by AT\&T for use on the telephone network \cite{202tspec},
 Bell 202 became popular among amateur radio operators due to the abundance
-of modems available on the second-hand market in 1981 when the FCC authorized
+of Bell 202 modem chipsets available in 1981 when the FCC authorized
 amateur packet operations in the United States \cite{gatewaypacket}.
 
 \begin{figure}[!b]
@@ -349,14 +349,14 @@ pass filtering effect More importantly, there is no specification established
 for what level of pre-/de-emphasis a modem should tolerate.
 One suitable source for such a benchmark would be to go back to the
 telephone networks where Bell 202 was originally used.
-Figure \ref{fig:3002} shows the allowable audio distortion of a basic type 3002
-channel as used in the telephone network; any level of distortion that falls 
+Figure \ref{fig:3002} shows the allowable audio skew of a basic type 3002
+channel as used in the telephone network; any level of skew that falls 
 inside the shaded region relative to a test tone at 1004 Hz is considered 
 acceptable \cite{alisouskas}.
 
 For application to Amateur Bell 202, 
-normalizing the distortion thresholds to 1004Hz is 
-less important than simply noting that the allowable distortion between the two
+normalizing the skew thresholds to 1004Hz is 
+less important than simply noting that the allowable skew between the two
 tones of interest (1200Hz and 2200Hz) is 10dB in either direction.
 An insightful measurement for Bell 202 modem designers would be testing how
 quickly their modem's performance falls off as a packet signal approaches 
@@ -368,7 +368,7 @@ be a valuable contribution beyond the scope of this paper.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{src/octave/3002}
-	\caption{Allowable distortion in a basic 3002 telephone channel}
+	\caption{Allowable skew in a basic 3002 telephone channel}
 	\label{fig:3002}
 \end{figure}
 

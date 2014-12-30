@@ -6,7 +6,7 @@ it primarily operates on a single regional 1200 bits per second data channel.
 Individual nodes share the 1200bps channel using 
 CSMA, as discussed in section~\ref{sec:bell202csma}, but the relationship between 
 these channel access methods and
-how often a station should beacon isn't straight-forward.
+how often a station should beacon isn't straight forward.
 
 The APRS specification avoids giving concrete guidance on what beacon interval should
 be used beyond stating that every station should beacon at the net's cycle rate,
@@ -15,11 +15,11 @@ network wide\cite[p.~9]{aprsspec}.\footnote{see proportional
 pathing in the previous section}
 For fixed nodes such as weather stations and network infrastructure, 
 these intervals are appropriate since their information for the network
-is unlikely to dramatically change in the ten to 30 minute time scale.
+is unlikely to dramatically change in the 10 to 30 minute time scale.
 Mobile users are a different story,
 since they often have new information for the network
 such as a direction change or a new text message.
-Fixed ten minute beacon intervals are therefore often unsatisfactory for
+Fixed 10 minute beacon intervals are therefore often unsatisfactory for
 mobile users, who would like to see new information passed to the rest of
 the network more quickly.
 The popularity of SmartBeaconing is a testament to this desire to beacon more often,
@@ -36,7 +36,7 @@ made in this chapter.
 \section{Network Capacity Objectives}
 
 The stated objective of APRS is to
-pass real-time tactical information among a station's 60 closest peers.
+pass real-time tactical information among a station's 60 nearest peers.
 This value was apparently selected arbitrarily based on the feeling that
 it is unlikely that a station would need to interact with anyone beyond their 60
 closest peers, but will nevertheless be used for the analysis in this chapter.
@@ -47,7 +47,7 @@ Every station has a different concept as to who is in their Aloha Circle and who
 is not.
 Analysis is further complicated by
 the fact that few APRS stations are actually within radio range of 60 other stations,
-so often a significant portion of an aloha circle is
+so often a significant portion of an Aloha Circle is
 beyond the local horizon and relayed through a limited number of digipeaters.
 This effects a phenomenon called the ``hidden node problem," which impacts
 Layer 1 CSMA access,
@@ -62,7 +62,7 @@ that would subsequently be used in other protocols such as Ethernet, GSM, and AP
 
 \section{Poisson Channel}
 
-The most basic analysis of a channel's ALOHA capacity can be based on the assumption that
+The most basic analysis of a channel's Aloha Circle capacity can be based on the assumption that
 each packet is the same length, 
 that traffic enters the network as a Poisson process,
 and that any collision between two packets causes both of them to fail to be delivered.
@@ -76,12 +76,12 @@ calculated as
 This normalized channel traffic metric is expressed
 using the dimensionless unit Erlang named after the engineer who originally
 developed the field of queuing theory as applied to the telephone network.
-Erlangs expres the fraction of a channel that would be needed for all
+Erlangs express the fraction of a channel that would be needed for all
 of the traffic entering the network.
 For example, a value $G=1.0$ would indicate that
 a single station would need to transmit packets continuously,
 where $G=0.5$ indicates that the channel is idle half of the time.
-Erlang values above one are valid, and simply represent that more than one
+Erlang values above 1.0 are valid, and simply represent that more than one
 channel would be required to handle all of the traffic.
 
 When channel access is stochastic, as it is in APRS,

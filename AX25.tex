@@ -7,7 +7,7 @@ organization until its latest release, Version 2.2 in July of 1998.
 
 The most significant difference between AX.25 and the original X.25 protocol lies
 in the hardware addresses used by AX.25, which are based on the expectation of
-each station using their FCC issues callsign. 
+each station using their FCC-issued callsign. 
 Each node is addressed by their callsign plus an additional 4 bit 
 secondary station identifier (SSID), which allows each licensee to maintain and operate 
 up to 16 stations in each packet namespace.
@@ -26,7 +26,7 @@ requirement to identify an active transmitter by its FCC-issued license every te
 
 A very limited subset of the complete AX.25 protocol is used by APRS due to APRS 
 deliberately avoiding the use of any of the connected or control modes of AX.25. This 
-means that any AX.25 protocol stack used for APRS need only support unconnected information (UI)
+means that any AX.25 protocol stack used for APRS need only support Unnumbered Information (UI)
 frames, and many APRS protocol stacks cannot handle any other forms of AX.25 traffic. 
 Figure \ref{fig:ax25uiformat} presents the modified form of the AX.25 frame that is used
 by APRS.
@@ -94,7 +94,7 @@ and users are only strongly discouraged from using a large number of hops.
 \subsection{Control Flags}
 
 The Control Flag octet indicates different modes for the AX.25 frame.
-Since APRS strictly uses only Unconnected Information (UI) frames, this field must
+Since APRS strictly uses only Unnumbered Information (UI) frames, this field must
 contain the value 0x03.
 
 \subsection{Protocol IDentifier}
@@ -118,7 +118,7 @@ a minimum of one octet identifying the type of APRS packet being carried \cite{a
 \section{FCC Identification Requirements}
 
 One of the conditions of operating a radio under FCC Title 47 CFR Part 97 is that amateur radio 
-operators are required to transmit their callsign at least once every ten minutes while active.
+operators are required to transmit their callsign at least once every ten minutes during an exchange.
 An ongoing source of controversy in the APRS community is what this means for operating
 an APRS node, and particularly digipeaters.
 

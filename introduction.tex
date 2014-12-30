@@ -23,7 +23,7 @@ a typical APRS network would advertise information such as:
 Despite these flexible capabilities, 
 and much to the chagrin of many of the original designers of APRS, 
 the vast majority of user traffic on the APRS network consists solely of 
-real-time automatic vehicle tracking (AVT).
+real-time Automatic Vehicle Location (AVL).
 Fittingly, it follows that one of the hotbeds for APRS network congestion
 is the Los Angeles basin, 
 due to its bowl-shaped geography and unusually high population density. \cite{bobfixla}
@@ -81,7 +81,10 @@ A typical APRS network consists of three types of stations:
 	\item Trackers - Mobile radios, often installed in vehicles with
 		a GPS receiver, that periodically advertise their physical location
 		along with any additional information including what other frequencies
-		the operator is listening on.
+		the operator is listening on.\footnote{The term tracker will
+			be used in this paper to encompass all APRS nodes which move
+			throughout the network, not limited to those without receivers as
+		the term is often used.}
 	\item Digipeaters (digis) - Half-duplex digital repeaters that build the
 		backbone of an APRS network, allowing stations to interact with other
 		stations beyond their immediate radio range. This is done by immediately
@@ -102,9 +105,9 @@ shows the typical path of a packet from a low-powered handheld tracker as it mov
 throughout the local APRS network. It's not unusual for battery-powered trackers to
 only output one to five watts of RF power, which limits their range to any stations
 immediately around them. 
-Since digipeaters are often higher power with 
-high-quality antennas, them repeating packets from these low-power trackers 
-greatly increases their range and usefulness.
+Since digipeaters often have higher power transmitters with 
+high-quality antennas, they can repeat packets from these low-power trackers 
+and greatly increase their range and usefulness.
 
 \begin{figure}
 	\centering
