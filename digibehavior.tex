@@ -112,7 +112,7 @@ Consider the routing path sequence in table \ref{tab:singlewide}.
 		\hline
 		Path & Transmitted by \\ \hline
 		WIDE1-1 & TRACKR \\ \hline
-		WIDE1* & HIGHA \\ \hline
+		HIGHA* & HIGHA \\ \hline
 		--- & HIGHB \\ \hline
 	\end{tabular}
 	\caption{TRACKR requesting a single WIDE hop}
@@ -129,6 +129,10 @@ TCP/IP based APRS Internet System backbone.
 The TAPR TNC2 also defined the convention to drop the -0 SSID so TRACKR-0 is
 written as simply TRACKR.
 
+When HIGHA digipeats this example packet, it appends its callsign to
+the list of consumed hops, and should drop the finished "WIDE1*" alias,
+which is not consistently implemented in APRS digipeaters.
+
 The ``---" is used in Table \ref{tab:singlewide} to represent that WIDEB does not
 repeat this beacon.
 It receives the repeated packet from WIDEA, but there are no un-consumed
@@ -143,8 +147,8 @@ more than one hop:
 		\hline
 		Path & Transmitted by \\ \hline
 		WIDE2-2 & TRACKR \\ \hline
-		WIDE2-1 & HIGHA \\ \hline
-		WIDE2* & HIGHB \\ \hline
+		HIGHA*,WIDE2-1 & HIGHA \\ \hline
+		HIGHA*,HIGHB* & HIGHB \\ \hline
 	\end{tabular}
 	\caption{TRACKR requesting two WIDE hops}
 	\label{tab:twowide}
@@ -177,8 +181,8 @@ as shown in table \ref{tab:lowusingrelay}.
 		\hline
 		Path & Transmitted by \\ \hline
 		RELAY,WIDE1-1 & TRACKR \\ \hline
-		RELAY*,WIDE1-1 & LOWDIG \\ \hline
-		RELAY*,WIDE1* & HIGHA \\ \hline
+		LOWDIG*,WIDE1-1 & LOWDIG \\ \hline
+		LOWDIG*,HIGHA* & HIGHA \\ \hline
 	\end{tabular}
 	\caption{TRACKR using LOWDIG to reach HIGHA}
 	\label{tab:lowusingrelay}
@@ -195,8 +199,8 @@ it's desirable for HIGHA to still repeat it.
 		\hline
 		Path & Transmitted by \\ \hline
 		RELAY,WIDE1-1 & TRACKR \\ \hline
-		RELAY*,WIDE1-1 & HIGHA \\ \hline
-		RELAY*,WIDE1* & HIGHB \\ \hline
+		HIGHA*,WIDE1-1 & HIGHA \\ \hline
+		HIGHA*,HIGHB* & HIGHB \\ \hline
 	\end{tabular}
 	\caption{HIGHA also responding to the RELAY alias}
 	\label{tab:usingrelay}
@@ -217,9 +221,9 @@ time.
 		\hline
 		Path & Transmitted by \\ \hline
 		WIDE3-3 & TRACKR \\ \hline
-		WIDE3-2 & HIGHA \\ \hline
-		WIDE3-1 & HIGHB \\ \hline
-		WIDE3* & HIGHA \\ \hline
+		HIGHA*,WIDE3-2 & HIGHA \\ \hline
+		HIGHA*,HIGHB*,WIDE3-1 & HIGHB \\ \hline
+		HIGHA*,HIGHB*,HIGHA* & HIGHA \\ \hline
 	\end{tabular}
 	\caption{A packet ``ping-ponging" between HIGHA and HIGHB}
 	\label{tab:widepingpong}
@@ -246,8 +250,8 @@ beacons it.
 		\hline
 		Path & Transmitted by \\ \hline
 		WIDE3-3 & TRACKR \\ \hline
-		WIDE3-2 & HIGHA \\ \hline
-		WIDE3-1 & HIGHB \\ \hline
+		HIGHA*,WIDE3-2 & HIGHA \\ \hline
+		HIGHA*,HIGHB*,WIDE3-1 & HIGHB \\ \hline
 		--- & HIGHA \\ \hline
 	\end{tabular}
 	\caption{HIGHA drops the echo heard from HIGHB}
@@ -282,8 +286,8 @@ still result in routing loops on the network:
 		Path & Transmitted by \\ \hline
 		RELAY,WIDE2-2 & TRACKR \\ \hline
 		RELAY*,WIDE2-2 & HIGHA \\ \hline
-		RELAY*,WIDE2-1 & HIGHB \\ \hline
-		RELAY*,WIDE2* & HIGHA \\ \hline
+		RELAY*,HIGHB*,WIDE2-1 & HIGHB \\ \hline
+		RELAY*,HIGHB*,HIGHA* & HIGHA \\ \hline
 	\end{tabular}
 	\caption{HIGHA failing to dedup its prior RELAY}
 	\label{tab:kpc3fail}
@@ -383,8 +387,7 @@ implementers to get creative with the details and extensions of
 the basic behavior defined in the AX.25 specification.
 Some of these variations include:
 \begin{itemize}
-	\item Should digipeaters replace used aliases with their callsign, and
-		how should the last hop of multi-hop aliases be handled?\footnote{i.e.
+	\item How should the last hop of multi-hop aliases be handled?\footnote{i.e.
 		should ``WIDE3-1" become ``DIGIA*" or ``DIGIA*,WIDE3*"?}
 	\item Preemptive digipeating, where digipeaters consider all
 		unused aliases, instead of only the first,
