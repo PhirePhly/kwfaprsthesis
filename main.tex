@@ -1,4 +1,4 @@
-\documentclass{ucthesis}
+\documentclass[11pt]{ucthesis}
 
 % Image support with PDF conversion
 \usepackage[pdftex]{graphicx}
@@ -17,14 +17,29 @@
 \usepackage{appendix}
 % Degree symbol
 \usepackage{textcomp}
+% Title sizes
+\usepackage{titlesec}
+
+\titleformat{\part}
+	{\normalfont\fontsize{12}{12}\rm\center}{}{1em}{}
+\titleformat{\chapter}
+{\normalfont\fontsize{12}{12}\rm\center}{\thechapter}{1em}{}
+\titleformat{\section}
+	{\normalfont\fontsize{12}{12}\rm}{\thesection}{1em}{}
+\titleformat{\subsection}
+	{\normalfont\fontsize{12}{12}\rm}{\thesection}{1em}{}
 
 \begin{document}
 \title{Examining Ambiguities in the Automatic Packet Reporting System}
 \author{Kenneth W. Finnegan}
 \degreemonth{December} \degreeyear{2014} \degree{Master of Science}
 \defensemonth{November} \defenseyear{2014}
-\numberofmembers{3} \chair{Bridget Benson, Ph.D.} 
-\othermemberA{John Bellardo, Ph.D.} \othermemberB{Dennis Derickson, Ph.D.}
+\numberofmembers{3} \chair{Bridget Benson, Ph.D.\newline
+Assistant Professor, Electrical Engineering} 
+\othermemberA{John Bellardo, Ph.D.\newline
+Associate Professor, Computer Science} 
+\othermemberB{Dennis Derickson, Ph.D.\newline
+Department Chair, Electrical Engineering}
 \field{Electrical Engineering} \campus{San Luis Obispo}
 \maketitle
 
@@ -60,11 +75,11 @@ the existing network.
 
 \input{conclusion.tex}
 
+\input{bib.tex}
 \begin{appendices}
 
 \input{bell202.append.tex}
 \end{appendices}
 
-\input{bib.tex}
 
 \end{document}
